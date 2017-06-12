@@ -1,6 +1,7 @@
 /*
 Universidade Federal do Rio de Janeiro
 Departamento de Engenharia Eletrônica
+
 Programa que analisa circuitos lineares contendo transistores bipolares, encontrando o ponto de
 operação e a resposta em frequência para pequenos sinais
 
@@ -94,7 +95,7 @@ int main(int argc, char** argv)
 
 	/* Mostra solucao */
 	cout << "Solucao:" << endl;
-	string txt = "Tensao";
+	string txt = "Tesao";
 
 	for (int i=1; i<=numero_variaveis; i++) 
 	{

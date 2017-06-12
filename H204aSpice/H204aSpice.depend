@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1497236487 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\main.cpp
+	<iostream>
+	<stdlib.h>
+	<fstream>
+	<iomanip>
+	<string>
+	<vector>
+	"supportFunctions.h"
+
+1497234182 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\supportfunctions.h
+
+1497236523 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\supportfunctions.cpp
+	<iostream>
+	"supportFunctions.h"
+
