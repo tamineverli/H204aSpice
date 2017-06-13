@@ -1,3 +1,14 @@
+/*
+
+
+PARTES QUE DEPENDEM DE MOSFET COMENTADAS
+1) ANÁLISE DE PONTO DE OPERAÇÃO 
+2) ESCRITA DO PONTO DE OPERAÇÃO NO ARQUIVO DE SAÍDA
+3)
+
+*/
+
+
 //
 //  analyzer.cpp
 //  Implementation of the netList class to be used in the main program.
@@ -43,7 +54,9 @@ Analyzer::Analyzer(const string validNetlistFilePath) : netlistFilePath(validNet
 	// If a transformer is found, a scan must be made after the netlist initialization
 	hasCommandLine = false;
 	hasTransformer = false;
-	hasMOSFET = false;
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-------------ADAPTADO PARA BJT-----------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	hasBJT = false;
 
 	while (getline(netlistFile, netlistLine)) {
 
@@ -92,9 +105,10 @@ Analyzer::Analyzer(const string validNetlistFilePath) : netlistFilePath(validNet
 				tempElement = new AmpOp(netlistLine);
 				setExtraNode = true;
 				break;
-			case 'M':
-				tempElement = new MOSFET(netlistLine);
-				hasMOSFET = true;
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-------------ADAPTADO PARA BJT-----------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			case 'B':
+				tempElement = new BJT(netlistLine);
+				hasBJT = true;
 				break;
 			case '.':
 				initializeCommandLine(netlistLine);
@@ -173,6 +187,8 @@ Analyzer::Analyzer(const string validNetlistFilePath) : netlistFilePath(validNet
 	calculateOperatingPoint();
 }
 
+
+//!!!!!!!!!!!!!!!!!!!!!!------------------TEM QUE ADAPTAR PARA BJT-------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //Constructor to be used by the calculateOperatingPoint of MOSFET element
 Analyzer::Analyzer(vector< Element *> &copiedElementNetlist, const unsigned int newNumTotalNodes) : numTotalNodes(newNumTotalNodes) {
 	
@@ -305,6 +321,10 @@ int Analyzer::solveNodalAnalysisMatrix() {
 	return 0;
 }
 
+
+//!!!!!!!!!!!!!!!!!!!!!!------------------TEM QUE ADAPTAR PARA BJT-------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 // Calculates the operating point and writes the result to a file
 void Analyzer::calculateOperatingPoint() {
 
@@ -373,6 +393,8 @@ void Analyzer::calculateOperatingPoint() {
 
 	cout << "Sistema convergiu com " << solutionIndex + 1 << " iteracoes." << endl << endl;
 }
+
+
 
 // Writes the result of the operating point to a file
 void Analyzer::writeOperatingPoint() {
@@ -450,6 +472,9 @@ void Analyzer::writeOperatingPoint() {
 	outputFile.close();
 	cout << "Ponto de operacao registrado no arquivo '" << outputFileName << "'." << endl << endl;
 }
+*/
+
+
 
 // Calls the functions buildNodalAnalysisMatrix and solveNodalAnaysisMatrix for each frequency to build the hole analisys
 void Analyzer::calculateFrequencyAnalysis() {
