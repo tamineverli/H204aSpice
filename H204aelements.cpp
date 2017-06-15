@@ -415,9 +415,6 @@ AmpOp::~AmpOp() {
 }
 
 
-
-
-
 //------------MOSFET---------------------------
 /*
 MOSFET::MOSFET(const string newNetlistLine) : Element(newNetlistLine) {
