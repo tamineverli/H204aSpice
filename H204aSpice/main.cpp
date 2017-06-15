@@ -67,24 +67,29 @@ int main(int argc, char** argv)
 
 //  2. READ NETLIST
 
-    /* Ask user to input the name of a netlist file */
-    cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
-	getline(cin, netlistName);
+	// 2.1 Ask user to input the name of a netlist file
 
-	/* Check if the file exists - if it doesn't, ask for a valid name */
-    netlistFile.open(netlistName.c_str());
-
-	while (!netlistFile) {
-
-	    system("cls");
-        welcomeHeader();
-
-		cout << "ARQUIVO INVALIDO \n" << endl;
-		cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
+	    cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
 		getline(cin, netlistName);
-	}
 
-	cout << "OKAY";
+		/* Check if the file exists - if it doesn't, ask for a valid name */
+	    netlistFile.open(netlistName.c_str());
+
+		while (!netlistFile) {
+
+		    system("cls");
+	        welcomeHeader();
+
+			cout << "ARQUIVO INVALIDO \n" << endl;
+			cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
+			getline(cin, netlistName);
+		}
+
+	// 2.2 Call netlist builder
+
+	cout << "Reading NETLIST..." << endl;
+	//netListStructure()
+
 	cin.get();
 
 /*
