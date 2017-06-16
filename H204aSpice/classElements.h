@@ -190,8 +190,41 @@ class AmpOp : public Element
 class BJT : public Element
 {
     public:
+        BJT(const string newNetlistLine);
+        virtual ~BJT();
+        void calculateOperatingPoint()(vector <Element*> &elementNetlist, const unsigned int numTotalNodes);
+        virtual void setTemplate (ComplexVector &nodalAnalysisMatrix);
+        void calculateParameters();
+        virtual void print();
 
+        string BJTType;     //NPN or PNP
+        string operatingRegion;
+        unsigned int base, collector, emitter;
+        double Vb, Vc, Ve, Vbe, Vce, Vbc, Ib, Ic, Ie;    //Vbe, Vce e Vbc podem entrar como metodo
+        double hfe, hie, hoe;
+        double Ccb, Cce, Cbe;
+        bool inverse;
 };
+
+class MOSFET : public Element {
+
+	public:
+		MOSFET(const string newNetlistLine);
+		virtual ~MOSFET();
+		void calculateOperatingPoint(vector< Element *> &elementNetlist, const unsigned int numTotalNodes);
+		virtual void setTemplate(ComplexVector &nodalAnalysisMatrix);
+		void calculateParameters();
+		virtual void print();
+
+		string MOSType;			//'NMOS' or 'PMOS'
+		string operatingRegion;
+		unsigned int nodeD, nodeG, nodeS, nodeB;
+		double L, W, K, Vt0, lambda, gama, phi, Ld;
+		double Vd, Vg, Vs, Vb;
+		double Vgs, Vds, Vbs, Vt, Id, I0;
+		double Gm, Gmb, Gds;	//Linearized parameters
+		double Cgs, Cgd, Cbg;
+		bool inverted;
 
 
 #endif // CLASSELEMENTS_H_INCLUDED
