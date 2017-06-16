@@ -1,17 +1,29 @@
-#include "netListStructure.h"
+#include "../header/netListStructure.h"
+#include "../header/Resistor.h"
 
-netListStructure::netListStructure(const string validFilePath) : netlistFilePath(validFilePath))
+#include <stdlib.h>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <math.h>
+#include <string>
+#include <vector>
+#include <sstream>
+
+using namespace std;
+
+netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath(validFilePath)
 {
 
 	ifstream netlistFile;
 	string fileLine;
 
-	Element *tempElement;
+	Component *tempComponent;
 	char elementType;
-	
+
 	bool setExtraNode, wrongElement, hasTransformer;
 
-	netlistFile.open(validFilePath);
+	netlistFile.open(validFilePath.c_str());
 
 
 	//if (!netlistFile) {
@@ -21,7 +33,8 @@ netListStructure::netListStructure(const string validFilePath) : netlistFilePath
 
 	// First line is the number of nodes
 	getline(netlistFile, fileLine);
-	numNodes = stoi(fileLine);
+	istringstream in(fileLine);
+	in >> numNodes; // = stoi(fileLine);
 
 	// If a transformer is found, a scan must be made after the netlist initialization
 	//hasCommandLine = false;
@@ -37,23 +50,23 @@ netListStructure::netListStructure(const string validFilePath) : netlistFilePath
 
 		switch (elementType) {
 			case 'R':
-				tempElement = new Resistor(fileLine);
+				tempComponent = new Resistor(fileLine);
 				break;
-			
+
 			default:
 				cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado..." << endl;
 				wrongElement = true;
 		}
 
 		/* Add element to netlist */
-		elementNetlist.push_back(tempElement);
-	}	
+		elementNetlist.push_back(tempComponent);
+	}
 
 	// Initializes the nodalAnalysisMatrix filled with zeros
 	//numTotalNodes = numNodes + extraNodeIdentifier.size();
 	cout << "Leitura da NETLIST completa. Circuito com " << numNodes << " nos e " << elementNetlist.size() << " elementos." << endl;
 
-	tempElement = NULL;
+	tempComponent = NULL;
 	netlistFile.close();
 
 	// The plus one and plus two in the size is to accept the line and column zero as the ground node
@@ -65,11 +78,11 @@ netListStructure::netListStructure(const string validFilePath) : netlistFilePath
 	// Element netlist is created in this object
 	//isElementNetlistShared = false;
 
-	//calculateOperatingPoint();	
+	//calculateOperatingPoint();
 
 }
 
-netListStructure::~netListStructure()
+netlistStructure::~netlistStructure()
 {
     //dtor
 }

@@ -12,7 +12,9 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add directory="header" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +24,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add directory="header" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -32,11 +36,17 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
-		<Unit filename="netListStructure.cpp" />
-		<Unit filename="netListStructure.h" />
-		<Unit filename="supportFunctions.cpp" />
-		<Unit filename="supportFunctions.h" />
+		<Unit filename="header/Component.h" />
+		<Unit filename="header/Resistor.h" />
+		<Unit filename="header/SimpleComponent.h" />
+		<Unit filename="header/netListStructure.h" />
+		<Unit filename="header/supportFunctions.h" />
+		<Unit filename="src/Component.cpp" />
+		<Unit filename="src/Resistor.cpp" />
+		<Unit filename="src/SimpleComponent.cpp" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/netListStructure.cpp" />
+		<Unit filename="src/supportFunctions.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

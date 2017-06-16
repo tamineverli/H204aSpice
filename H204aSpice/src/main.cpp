@@ -37,6 +37,7 @@ Por: Marina Torres (marinat94@poli.ufrj.br)
 
 
 #include "supportFunctions.h"
+#include "netListStructure.h"
 
 //#include "constants.hpp"
 //#include "functions.hpp"
@@ -88,7 +89,7 @@ int main(int argc, char** argv)
 	// 2.2 Call netlist builder
 
 	cout << "Reading NETLIST..." << endl;
-	//netListStructure()
+	netlistStructure netlistStructure(netlistName);
 
 	cin.get();
 

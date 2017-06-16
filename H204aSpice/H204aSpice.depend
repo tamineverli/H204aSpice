@@ -14,3 +14,59 @@
 	<iostream>
 	"supportFunctions.h"
 
+1497573943 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\component.cpp
+	"../header/Component.h"
+	<math.h>
+	<iostream>
+	<iomanip>
+
+1497574012 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\component.h
+	<string>
+	<complex>
+	<vector>
+
+1497574309 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
+	<iostream>
+	<stdlib.h>
+	<fstream>
+	<iomanip>
+	<string>
+	<vector>
+	"supportFunctions.h"
+	"netListStructure.h"
+
+1497234182 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\supportfunctions.h
+
+1497574297 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\netliststructure.h
+	<string>
+	<complex>
+	<vector>
+	<Component.h>
+
+1497575485 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
+	"../header/netListStructure.h"
+	"../header/Resistor.h"
+	<stdlib.h>
+	<fstream>
+	<iostream>
+	<iomanip>
+	<math.h>
+	<string>
+	<vector>
+	<sstream>
+
+1497574021 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\resistor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1497574003 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\simplecomponent.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1497574031 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\resistor.cpp
+	"../header/Resistor.h"
+

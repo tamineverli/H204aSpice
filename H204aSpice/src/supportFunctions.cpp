@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "supportFunctions.h"
+#include "../header/supportFunctions.h"
 
 using namespace std;
 

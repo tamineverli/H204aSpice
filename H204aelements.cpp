@@ -10,6 +10,7 @@ ARQUIVO ELEMENTS DO DANIEL COM A PARTE DE MOSFET COMENTADA NO FINAL
 #include <math.h>
 #include <iostream>
 #include <iomanip>
+
 #include "elements.h"
 #include "analyzer.h"
 
