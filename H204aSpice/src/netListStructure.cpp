@@ -60,6 +60,9 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 		/* Add element to netlist */
 		elementNetlist.push_back(tempComponent);
+
+		tempComponent->print();
+
 	}
 
 	// Initializes the nodalAnalysisMatrix filled with zeros
