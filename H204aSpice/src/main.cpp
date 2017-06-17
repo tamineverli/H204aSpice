@@ -64,6 +64,7 @@ int main(int argc, char** argv)
 	//int totalNodeNum;
 	//string netlistName, commandLine, outputFileName;
 	string netlistName;
+	string netlistPath;
 	ifstream netlistFile;
 
 //  2. READ NETLIST
@@ -73,8 +74,13 @@ int main(int argc, char** argv)
 	    cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
 		getline(cin, netlistName);
 
+		netlistPath = "netlists/" + netlistName;
+
+		cout << "NETLIST path is: " << netlistPath << endl;
+		cin.get();
+
 		/* Check if the file exists - if it doesn't, ask for a valid name */
-	    netlistFile.open(netlistName.c_str());
+	    netlistFile.open(netlistPath.c_str());
 
 		while (!netlistFile) {
 
@@ -84,12 +90,20 @@ int main(int argc, char** argv)
 			cout << "ARQUIVO INVALIDO \n" << endl;
 			cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
 			getline(cin, netlistName);
+
+			netlistPath = "/netlists/" + netlistName;
+
+			cout << "NETLIST path is: " << netlistPath << endl;
+			cin.get();
+
+			/* Check if the file exists - if it doesn't, ask for a valid name */
+		    netlistFile.open(netlistPath.c_str());
 		}
 
 	// 2.2 Call netlist builder
 
 	cout << "Reading NETLIST..." << endl;
-	netlistStructure netlistStructure(netlistName);
+	netlistStructure netlistStructure(netlistPath);
 
 	cin.get();
 

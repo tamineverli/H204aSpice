@@ -25,7 +25,7 @@
 	<complex>
 	<vector>
 
-1497574309 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
+1497723345 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
@@ -43,7 +43,7 @@
 	<vector>
 	<Component.h>
 
-1497713276 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
+1497718496 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
 	<stdlib.h>
@@ -70,7 +70,7 @@
 1497574031 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\resistor.cpp
 	"../header/Resistor.h"
 
-1497575644 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\simplecomponent.cpp
+1497722692 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\simplecomponent.cpp
 	"../header/SimpleComponent.h"
 	<iostream>
 
