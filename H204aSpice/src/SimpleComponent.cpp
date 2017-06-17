@@ -4,25 +4,13 @@
 
 SimpleComponent::SimpleComponent(string netlistLine) : Component(netlistLine) {
 
-	istringstream in(netlistLine);
-	in >> node1 >> node2 >> value;
-
-/*
 	unsigned int blankPosition;
 
 	blankPosition = netlistLine.find(" ");
-	istringstream in(netlistLine.substr(0, blankPosition));
-	in >> node1; // = stoi(netlistLine.substr(0, blankPosition));
+	istringstream in(netlistLine.substr(blankPosition + 1));
 
-	netlistLine = netlistLine.substr(blankPosition + 1);
-	blankPosition = netlistLine.find(" ");
-	istringstream in(netlistLine.substr(0, blankPosition));
-	in >> node2; // = stoi(netlistLine.substr(0, blankPosition));
-
-	netlistLine = netlistLine.substr(blankPosition + 1);
-	value = stod(netlistLine);
-*/
-
+	//cout << "paramentros lidos " << netlistLine << endl;  //debug
+	in >> node1 >> node2 >> value;
 }
 
 void SimpleComponent::print() {

@@ -75,9 +75,8 @@ int main(int argc, char** argv)
 		getline(cin, netlistName);
 
 		netlistPath = "netlists/" + netlistName;
-
-		cout << "NETLIST path is: " << netlistPath << endl;
-		cin.get();
+		//cout << "NETLIST path is: " << netlistPath << endl;	// debug
+		//cin.get();
 
 		/* Check if the file exists - if it doesn't, ask for a valid name */
 	    netlistFile.open(netlistPath.c_str());
@@ -91,10 +90,9 @@ int main(int argc, char** argv)
 			cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
 			getline(cin, netlistName);
 
-			netlistPath = "/netlists/" + netlistName;
-
-			cout << "NETLIST path is: " << netlistPath << endl;
-			cin.get();
+			netlistPath = "netlists/" + netlistName;
+			//cout << "NETLIST path is: " << netlistPath << endl;	//debug
+			//cin.get();
 
 			/* Check if the file exists - if it doesn't, ask for a valid name */
 		    netlistFile.open(netlistPath.c_str());
