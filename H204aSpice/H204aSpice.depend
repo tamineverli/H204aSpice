@@ -25,7 +25,7 @@
 	<complex>
 	<vector>
 
-1497723345 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
+1497733846 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
@@ -55,7 +55,7 @@
 	<vector>
 	<sstream>
 
-1497574021 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\resistor.h
+1497935587 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\resistor.h
 	<SimpleComponent.h>
 	<string>
 	<complex>
@@ -70,11 +70,29 @@
 1497574031 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\resistor.cpp
 	"../header/Resistor.h"
 
-1497722692 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\simplecomponent.cpp
+1497931092 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\simplecomponent.cpp
 	"../header/SimpleComponent.h"
 	<iostream>
 
 1497567397 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\supportfunctions.cpp
 	<iostream>
 	"../header/supportFunctions.h"
+
+1497932442 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\capacitor.cpp
+	"../header/Capacitor.h"
+
+1497935646 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\capacitor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1497932469 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\inductor.cpp
+	"../header/Inductor.h"
+
+1497935635 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\inductor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
 

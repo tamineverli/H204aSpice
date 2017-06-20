@@ -15,6 +15,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add directory="header" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -26,6 +27,7 @@
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
 					<Add directory="header" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -36,14 +38,24 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="header/Capacitor.h" />
 		<Unit filename="header/Component.h" />
+		<Unit filename="header/CurrentSrc.h" />
+		<Unit filename="header/IndependentSource.h" />
+		<Unit filename="header/Inductor.h" />
 		<Unit filename="header/Resistor.h" />
 		<Unit filename="header/SimpleComponent.h" />
+		<Unit filename="header/VoltageSrc.h" />
 		<Unit filename="header/netListStructure.h" />
 		<Unit filename="header/supportFunctions.h" />
+		<Unit filename="src/Capacitor.cpp" />
 		<Unit filename="src/Component.cpp" />
+		<Unit filename="src/CurrentSrc.cpp" />
+		<Unit filename="src/IndependentSource.cpp" />
+		<Unit filename="src/Inductor.cpp" />
 		<Unit filename="src/Resistor.cpp" />
 		<Unit filename="src/SimpleComponent.cpp" />
+		<Unit filename="src/VoltageSrc.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/netListStructure.cpp" />
 		<Unit filename="src/supportFunctions.cpp" />

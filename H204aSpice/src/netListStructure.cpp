@@ -1,5 +1,9 @@
 #include "../header/netListStructure.h"
 #include "../header/Resistor.h"
+#include "../header/Capacitor.h"
+#include "../header/Inductor.h"
+#include "../header/VoltageSrc.h"
+#include "../header/CurrentSrc.h"
 
 #include <stdlib.h>
 #include <fstream>
@@ -18,7 +22,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 	ifstream netlistFile;
 	string fileLine;
 
-	Component *tempComponent;
+	Component *newComponent;
 	char elementType;
 
 	bool setExtraNode, wrongElement, hasTransformer;
@@ -49,27 +53,45 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		wrongElement = false;
 
 		switch (elementType) {
-			case 'R':
-				tempComponent = new Resistor(fileLine);
+
+		    /*Simple Components*/
+			case 'R':   //resistor
+				newComponent = new Resistor(fileLine);
+				break;
+			case 'L':   //inductor
+				newComponent = new Inductor(fileLine);
+				setExtraNode = true;
+				break;
+			case 'C':   //capacitor
+				newComponent = new Capacitor(fileLine);
+				break;
+
+            /*Independent Sources*/
+            case 'I':   //current source
+				newComponent = new CurrentSrc(fileLine);
+				break;
+			case 'V':   //voltage source
+				newComponent = new VoltageSrc(fileLine);
+				setExtraNode = true;
 				break;
 
 			default:
 				cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado..." << endl;
 				wrongElement = true;
+
 		}
 
-		/* Add element to netlist */
-		elementNetlist.push_back(tempComponent);
+		/* Add new component to netlist */
+		elementNetlist.push_back(newComponent);
 
-		tempComponent->print();
-
+		newComponent->print();
 	}
 
 	// Initializes the nodalAnalysisMatrix filled with zeros
 	//numTotalNodes = numNodes + extraNodeIdentifier.size();
 	cout << "Leitura da NETLIST completa. Circuito com " << numNodes << " nos e " << elementNetlist.size() << " elementos." << endl;
 
-	tempComponent = NULL;
+	newComponent = NULL;
 	netlistFile.close();
 
 	// The plus one and plus two in the size is to accept the line and column zero as the ground node
