@@ -4,6 +4,7 @@
 #include "../header/Inductor.h"
 #include "../header/VoltageSrc.h"
 #include "../header/CurrentSrc.h"
+#include "../header/AmpOp.h"
 
 #include <stdlib.h>
 #include <fstream>
@@ -28,12 +29,6 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 	bool setExtraNode, wrongElement, hasTransformer;
 
 	netlistFile.open(validFilePath.c_str());
-
-
-	//if (!netlistFile) {
-	//	cout << "Erro: nao foi possivel abrir o arquivo de entrada." << endl;
-	//	exit(EXIT_FAILURE);
-	//}
 
 	// First line is the number of nodes
 	getline(netlistFile, fileLine);
@@ -75,6 +70,12 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 				setExtraNode = true;
 				break;
 
+            /*Operational Amplifier*/
+			case 'O':
+				newComponent = new AmpOp(fileLine);
+				setExtraNode = true;
+				break;
+
 			default:
 				cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado..." << endl;
 				wrongElement = true;
@@ -89,8 +90,9 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 	// Initializes the nodalAnalysisMatrix filled with zeros
 	//numTotalNodes = numNodes + extraNodeIdentifier.size();
-	cout << "Leitura da NETLIST completa. Circuito com " << numNodes << " nos e " << elementNetlist.size() << " elementos." << endl;
-
+	cout << "\nNETLIST com " << elementNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
+	cout << "_____________________________________________________\n" << endl;
+	
 	newComponent = NULL;
 	netlistFile.close();
 

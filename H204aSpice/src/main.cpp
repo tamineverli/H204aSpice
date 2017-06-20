@@ -39,21 +39,15 @@ Por: Marina Torres (marinat94@poli.ufrj.br)
 #include "supportFunctions.h"
 #include "netListStructure.h"
 
-//#include "constants.hpp"
-//#include "functions.hpp"
-//#include "classes.hpp"
-
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    // Welcome message
-	cout << "\nTrabalho de Circuitos Eletricos II \n" << endl;
-	cout << "Autores: " << endl;
-	cout << "- Marina Torres \n- Tamine Verli \n- Victor Costa \n\n" << endl;
-	cout << "Rev 1.0 - 11/06/17 \n\n" << endl;
 
-//  1. DECLARE MAIN VARIABLES
+//	0. WELCOME!
+	welcomeHeader();
+
+//  1. DECLARE MAIN PROGRAM VARIABLES
 
 	//int numero_variaveis;
 	//string metodo = "DC";
@@ -63,47 +57,39 @@ int main(int argc, char** argv)
 
 	//int totalNodeNum;
 	//string netlistName, commandLine, outputFileName;
-	string netlistName;
-	string netlistPath;
-	ifstream netlistFile;
+
 
 //  2. READ NETLIST
 
-	// 2.1 Ask user to input the name of a netlist file
-
-	    cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
-		getline(cin, netlistName);
-
-		netlistPath = "netlists/" + netlistName;
-		//cout << "NETLIST path is: " << netlistPath << endl;	// debug
-		//cin.get();
-
-		/* Check if the file exists - if it doesn't, ask for a valid name */
+	//	2.1 Ask for a valid netlist file name
+		string netlistPath;
+		ifstream netlistFile;
+	
+	//	2.2 Ask for a valid netlist file name	
+		programHeader();
+		netlistPath = askNetlistPath();
+		
+	//	2.3 Check if the file exists	
 	    netlistFile.open(netlistPath.c_str());
 
+	//	2.4 If file name is invalid, try again
 		while (!netlistFile) {
-
-		    system("cls");
-	        welcomeHeader();
-
+	        programHeader();
 			cout << "ARQUIVO INVALIDO \n" << endl;
-			cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
-			getline(cin, netlistName);
-
-			netlistPath = "netlists/" + netlistName;
-			//cout << "NETLIST path is: " << netlistPath << endl;	//debug
-			//cin.get();
-
-			/* Check if the file exists - if it doesn't, ask for a valid name */
+		
+			netlistPath = askNetlistPath();
 		    netlistFile.open(netlistPath.c_str());
 		}
 
-	// 2.2 Call netlist builder
+	// 2.5 Call netlist builder
 
-	cout << "Reading NETLIST..." << endl;
-	netlistStructure netlistStructure(netlistPath);
+		programHeader();
+		cout << "\nLendo NETLIST...\n\n" << endl;
+		netlistStructure netlistStructure(netlistPath); //This is where the fun begins
 
-	cin.get();
+		cout << "Pronto para iniciar a analise!" << endl;
+		cout << "Pressione qualquer tecla para continuar..." << endl;
+		cin.get();
 
 /*
 

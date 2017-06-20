@@ -25,7 +25,7 @@
 	<complex>
 	<vector>
 
-1497733846 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
+1497989844 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
@@ -35,7 +35,10 @@
 	"supportFunctions.h"
 	"netListStructure.h"
 
-1497234182 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\supportfunctions.h
+1497990388 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\supportfunctions.h
+	<iostream>
+	<stdlib.h>
+	<string>
 
 1497574297 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\netliststructure.h
 	<string>
@@ -43,9 +46,14 @@
 	<vector>
 	<Component.h>
 
-1497718496 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
+1497988941 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
+	"../header/Capacitor.h"
+	"../header/Inductor.h"
+	"../header/VoltageSrc.h"
+	"../header/CurrentSrc.h"
+	"../header/AmpOp.h"
 	<stdlib.h>
 	<fstream>
 	<iostream>
@@ -92,6 +100,44 @@
 
 1497935635 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\inductor.h
 	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1497936167 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\currentsrc.cpp
+	"CurrentSrc.h"
+
+1497936595 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\currentsrc.h
+	<IndependentSource.h>
+	<string>
+	<complex>
+	<vector>
+
+1497936496 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\independentsource.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1497936361 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\independentsource.cpp
+	"IndependentSource.h"
+	<iostream>
+
+1497936072 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\voltagesrc.cpp
+	"VoltageSrc.h"
+
+1497935717 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\voltagesrc.h
+	<IndependentSource.h>
+	<string>
+	<complex>
+	<vector>
+
+1497987545 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\ampop.cpp
+	"AmpOp.h"
+	<iostream>
+
+1497986004 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\ampop.h
+	<Component.h>
 	<string>
 	<complex>
 	<vector>
