@@ -14,13 +14,13 @@ class netlistStructure
         virtual ~netlistStructure();
 
 		// Array containing the components read from the netlist and their parameters
-		vector<Component*> elementNetlist;
+		vector<Component*> componentNetlist;
 
 		// Identifier of extraNodes to build the first output file line
 		vector<string> extraNodeIdentifier;
 
 		// numRows = numNodes; numColumns = numNodes + 1 (the plus one is for the coupled solution vector as the last column)
-		vector < vector<Complex> > nodalAnalysisMatrix;
+		vector < vector<Complex> > nodalSystem;
 
 		// Solution matrix, used in the end to write the output file
 		vector<Complex> solutionMatrix;
@@ -28,7 +28,7 @@ class netlistStructure
 		string netlistFilePath, stepType;
 		unsigned int numNodes, numTotalNodes, solutionIndex;
 		double beginFrequency, endFrequency, frequencyStep;
-		bool isElementNetlistShared, hasCommandLine, hasMOSFET;
+		bool hasBJT, validCommandLine, isElementNetlistShared;
 
 };
 

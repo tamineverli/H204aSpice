@@ -11,7 +11,7 @@ class CurrentSrc : public IndependentSource
 {
     public:
         CurrentSrc(string netlistLine);
-        virtual void setTemplate(ComplexVector &nodalAnalysisMatrix);
+        virtual void setTemplate(ComplexVector &nodalSystem);
         virtual ~CurrentSrc();
 };
 

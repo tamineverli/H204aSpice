@@ -3,7 +3,7 @@
 CurrentSrc::CurrentSrc(string netlistLine) : IndependentSource(netlistLine) {
 }
 
-void CurrentSrc::setTemplate(ComplexVector &nodalAnalysisMatrix) {
+void CurrentSrc::setTemplate(ComplexVector &nodalSystem) {
 
 	Complex current;
 
@@ -12,8 +12,8 @@ void CurrentSrc::setTemplate(ComplexVector &nodalAnalysisMatrix) {
 	else
 		current = polar(magnitude, phase);
 
-	nodalAnalysisMatrix[node1][nodalAnalysisMatrix.size()] += (-1.0)*current;
-	nodalAnalysisMatrix[node2][nodalAnalysisMatrix.size()] += current;
+	nodalSystem[node1][nodalSystem.size()] += (-1.0)*current;
+	nodalSystem[node2][nodalSystem.size()] += current;
 }
 
 CurrentSrc::~CurrentSrc() {

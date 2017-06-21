@@ -19,7 +19,7 @@ void SimpleComponent::print() {
 
 	cout << " Node 1: " << node1 << endl;
 	cout << " Node 2: " << node2 << endl;
-	cout << " ExtraNode: " << extraNode << endl;
+	cout << " Extra Node: " << extraNode << endl;
 	cout << " Value: " << value << endl << endl;
 }
 

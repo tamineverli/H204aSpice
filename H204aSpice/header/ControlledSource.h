@@ -11,7 +11,7 @@ class ControlledSource : public Component
 {
     public:
         ControlledSource(string netlistLine);
-		virtual void setTemplate(ComplexVector &nodalAnalysisMatrix) = 0;
+		virtual void setTemplate(ComplexVector &nodalSystem) = 0;
 		virtual void print();
 		virtual ~ControlledSource();
 

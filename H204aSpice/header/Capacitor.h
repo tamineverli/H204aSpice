@@ -11,7 +11,7 @@ class Capacitor : public SimpleComponent
 {
     public:
         Capacitor(string netlistLine);
-        virtual void setTemplate(ComplexVector &nodalAnalysisMatrix);
+        virtual void setTemplate(ComplexVector &nodalSystem);
         virtual ~Capacitor();
 		Complex capacitiveAdmittance;
 

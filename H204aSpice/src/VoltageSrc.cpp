@@ -3,7 +3,7 @@
 VoltageSrc::VoltageSrc(string netlistLine) : IndependentSource(netlistLine) {
 }
 
-void VoltageSrc::setTemplate(ComplexVector &nodalAnalysisMatrix) {
+void VoltageSrc::setTemplate(ComplexVector &nodalSystem) {
 
 	Complex voltage;
 
@@ -12,12 +12,12 @@ void VoltageSrc::setTemplate(ComplexVector &nodalAnalysisMatrix) {
 	else
 		voltage = polar(magnitude, phase);
 
-	nodalAnalysisMatrix[node1][extraNode] += 1.0;
-	nodalAnalysisMatrix[node2][extraNode] += -1.0;
-	nodalAnalysisMatrix[extraNode][node1] += -1.0;
-	nodalAnalysisMatrix[extraNode][node2] += 1.0;
+	nodalSystem[node1][extraNode] += 1.0;
+	nodalSystem[node2][extraNode] += -1.0;
+	nodalSystem[extraNode][node1] += -1.0;
+	nodalSystem[extraNode][node2] += 1.0;
 
-	nodalAnalysisMatrix[extraNode][nodalAnalysisMatrix.size()] += (-1.0)*voltage;
+	nodalSystem[extraNode][nodalSystem.size()] += (-1.0)*voltage;
 }
 
 VoltageSrc::~VoltageSrc() {

@@ -11,7 +11,7 @@ class Inductor : public SimpleComponent
 {
     public:
         Inductor(string netlistLine);
-		virtual void setTemplate(ComplexVector &nodalAnalysisMatrix);
+		virtual void setTemplate(ComplexVector &nodalSystem);
 		virtual ~Inductor();
 
 		Complex inductiveReactance;

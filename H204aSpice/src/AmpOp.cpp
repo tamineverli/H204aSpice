@@ -13,12 +13,12 @@ AmpOp::AmpOp(const string netlistLine) : Component(netlistLine) {
 	in >> out_positive >> out_negative >> in_positive >> in_negative;
 }
 
-void AmpOp::setTemplate(ComplexVector &nodalAnalysisMatrix) {
+void AmpOp::setTemplate(ComplexVector &nodalSystem) {
 
-	nodalAnalysisMatrix[out_positive][extraNode] += 1.0;
-	nodalAnalysisMatrix[out_negative][extraNode] += -1.0;
-	nodalAnalysisMatrix[extraNode][in_positive] += 1.0;
-	nodalAnalysisMatrix[extraNode][in_negative] += -1.0;
+	nodalSystem[out_positive][extraNode] += 1.0;
+	nodalSystem[out_negative][extraNode] += -1.0;
+	nodalSystem[extraNode][in_positive] += 1.0;
+	nodalSystem[extraNode][in_negative] += -1.0;
 }
 
 void AmpOp::print() {

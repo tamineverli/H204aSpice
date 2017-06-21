@@ -11,7 +11,7 @@ class AmpOp : public Component
 {
     public:
         AmpOp(const string netlistLine);
-		virtual void setTemplate(ComplexVector &nodalAnalysisMatrix);
+		virtual void setTemplate(ComplexVector &nodalSystem);
 		virtual void print();
 		virtual ~AmpOp();
 

@@ -11,11 +11,10 @@ Component::Component(string netlistLine) : netlistLine(netlistLine) {
 	type = netlistLine[0];
 
 	blankPosition = netlistLine.find(" ");
-	identifier = netlistLine.substr(0, blankPosition);
+	name = netlistLine.substr(0, blankPosition);
 
 	netlistLine = netlistLine.substr(blankPosition + 1);
 
-	//If used, the correct value will be set in subsequent constructors
 	extraNode = 0;
 }
 
@@ -32,7 +31,7 @@ double Component::getFrequency() {
 
 void Component::print() {
 	cout << " Type: " << type << endl;
-	cout << " Identifier: " << identifier << endl;
+	cout << " Name: " << name << endl;
 }
 
 double Component::frequency = 0.0;
