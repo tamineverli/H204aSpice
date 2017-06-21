@@ -69,7 +69,7 @@
 	<complex>
 	<vector>
 
-1497574003 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\simplecomponent.h
+1497995421 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\simplecomponent.h
 	<Component.h>
 	<string>
 	<complex>
@@ -82,8 +82,7 @@
 	"../header/SimpleComponent.h"
 	<iostream>
 
-1497567397 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\supportfunctions.cpp
-	<iostream>
+1497990358 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\supportfunctions.cpp
 	"../header/supportFunctions.h"
 
 1497932442 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\capacitor.cpp
@@ -141,4 +140,23 @@
 	<string>
 	<complex>
 	<vector>
+
+1498005710 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\controlledsource.cpp
+	"ControlledSource.h"
+	<iostream>
+
+1497995449 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\controlledsource.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1498001215 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\controlledsourceimplementations.cpp
+	"../header/ControlledSourceImplementations.h"
+
+1498001305 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\controlledsourceimplementations.h
+	"ControlledSource.h"
+	<iostream>
+	<stdlib.h>
+	<string>
 

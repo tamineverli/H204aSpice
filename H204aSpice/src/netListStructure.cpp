@@ -5,6 +5,7 @@
 #include "../header/VoltageSrc.h"
 #include "../header/CurrentSrc.h"
 #include "../header/AmpOp.h"
+#include "../header/ControlledSourceImplementations.h"
 
 #include <stdlib.h>
 #include <fstream>
@@ -49,32 +50,49 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 		switch (elementType) {
 
-		    /*Simple Components*/
-			case 'R':   //resistor
-				newComponent = new Resistor(fileLine);
-				break;
-			case 'L':   //inductor
-				newComponent = new Inductor(fileLine);
-				setExtraNode = true;
-				break;
-			case 'C':   //capacitor
-				newComponent = new Capacitor(fileLine);
-				break;
+		    //Simple Components
+				case 'R':   //resistor
+					newComponent = new Resistor(fileLine);
+					break;
+				case 'L':   //inductor
+					newComponent = new Inductor(fileLine);
+					setExtraNode = true;
+					break;
+				case 'C':   //capacitor
+					newComponent = new Capacitor(fileLine);
+					break;
 
-            /*Independent Sources*/
-            case 'I':   //current source
-				newComponent = new CurrentSrc(fileLine);
-				break;
-			case 'V':   //voltage source
-				newComponent = new VoltageSrc(fileLine);
-				setExtraNode = true;
-				break;
+            //Independent Sources
+	            case 'I':   //current source
+					newComponent = new CurrentSrc(fileLine);
+					break;
+				case 'V':   //voltage source
+					newComponent = new VoltageSrc(fileLine);
+					setExtraNode = true;
+					break;
 
-            /*Operational Amplifier*/
-			case 'O':
-				newComponent = new AmpOp(fileLine);
-				setExtraNode = true;
-				break;
+            //Operational Amplifier
+				case 'O':
+					newComponent = new AmpOp(fileLine);
+					setExtraNode = true;
+					break;
+
+			//Controlled Sources
+				case 'E':	//Voltage_to_Voltage
+					newComponent = new Voltage_to_Voltage(fileLine);
+					setExtraNode = true;
+					break;
+				case 'F':	//Current_to_Current
+					newComponent = new Current_to_Current(fileLine);
+					setExtraNode = true;
+					break;
+				case 'G':	//Voltage_to_Current (transconductance)
+					newComponent = new Voltage_to_Current(fileLine);
+					break;
+				case 'H':	//Current_to_Voltage (transresistance)
+					newComponent = new Current_to_Voltage(fileLine);
+					setExtraNode = true;
+					break;
 
 			default:
 				cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado..." << endl;
@@ -90,9 +108,9 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 	// Initializes the nodalAnalysisMatrix filled with zeros
 	//numTotalNodes = numNodes + extraNodeIdentifier.size();
-	cout << "\nNETLIST com " << elementNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
+	cout << "\n NETLIST com " << elementNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
 	cout << "_____________________________________________________\n" << endl;
-	
+
 	newComponent = NULL;
 	netlistFile.close();
 

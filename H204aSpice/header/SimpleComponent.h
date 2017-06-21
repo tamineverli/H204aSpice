@@ -15,7 +15,6 @@ class SimpleComponent : public Component {
 		virtual void print();
 		virtual ~SimpleComponent();
 
-		//Node1 is the positive one
 		unsigned int node1, node2;
 		double value;			//Resistance, inductance, capacitante, etc
 };
