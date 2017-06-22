@@ -38,12 +38,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="header/AmpOp.h" />
 		<Unit filename="header/Capacitor.h" />
 		<Unit filename="header/Component.h" />
-		<Unit filename="header/ControlledSource.h" />
-		<Unit filename="header/ControlledSourceImplementations.h" />
-		<Unit filename="header/CoupledInductors.h" />
 		<Unit filename="header/CurrentSrc.h" />
 		<Unit filename="header/IndependentSource.h" />
 		<Unit filename="header/Inductor.h" />
@@ -52,12 +48,8 @@
 		<Unit filename="header/VoltageSrc.h" />
 		<Unit filename="header/netListStructure.h" />
 		<Unit filename="header/supportFunctions.h" />
-		<Unit filename="src/AmpOp.cpp" />
 		<Unit filename="src/Capacitor.cpp" />
 		<Unit filename="src/Component.cpp" />
-		<Unit filename="src/ControlledSource.cpp" />
-		<Unit filename="src/ControlledSourceImplementations.cpp" />
-		<Unit filename="src/CoupledInductors.cpp" />
 		<Unit filename="src/CurrentSrc.cpp" />
 		<Unit filename="src/IndependentSource.cpp" />
 		<Unit filename="src/Inductor.cpp" />

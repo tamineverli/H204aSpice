@@ -20,7 +20,7 @@
 	<iostream>
 	<iomanip>
 
-1498106829 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\component.h
+1498016745 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\component.h
 	<string>
 	<complex>
 	<vector>
@@ -40,7 +40,7 @@
 	<stdlib.h>
 	<string>
 
-1498103244 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\netliststructure.h
+1498016252 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\netliststructure.h
 	<string>
 	<complex>
 	<vector>
@@ -63,7 +63,7 @@
 	<vector>
 	<sstream>
 
-1498017044 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\resistor.h
+1497935587 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\resistor.h
 	<SimpleComponent.h>
 	<string>
 	<complex>
@@ -75,10 +75,10 @@
 	<complex>
 	<vector>
 
-1498017051 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\resistor.cpp
+1497574031 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\resistor.cpp
 	"../header/Resistor.h"
 
-1498017075 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\simplecomponent.cpp
+1497931092 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\simplecomponent.cpp
 	"../header/SimpleComponent.h"
 	<iostream>
 
@@ -122,10 +122,10 @@
 	"IndependentSource.h"
 	<iostream>
 
-1498017105 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\voltagesrc.cpp
+1497936072 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\voltagesrc.cpp
 	"VoltageSrc.h"
 
-1498017097 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\voltagesrc.h
+1497935717 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\voltagesrc.h
 	<IndependentSource.h>
 	<string>
 	<complex>

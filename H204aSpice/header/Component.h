@@ -24,7 +24,7 @@ class Component
 
 		char type;					//First letter of netlist line read
 
-		string netlistLine;		//Element line read from netlist
+		string netlistLine;			//Element line read from netlist
 		string name;			//Element name, found after first letter of netlist line
 
 		unsigned int extraNode;		//For components that need an extra node

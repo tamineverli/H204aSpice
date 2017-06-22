@@ -127,15 +127,16 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 			if (validComponent) {
 
-				// Add new component to netlist and print it
+				// Add new component to netlist
 				componentNetlist.push_back(newComponent);
 				newComponent->print();
 
 				// If the element needs an extra node, initializes the extra node in extraNodeIdentifier vector and in the element itself
 				if (setExtraNode) {
+
 					// If the element is a Current_to_Voltage controlled source, it needs two extra nodes
 					if (componentType == 'H') {
-
+ 
 						Current_to_Voltage *tempCurrent_to_Voltage = dynamic_cast <Current_to_Voltage *> (newComponent);
 
 						extraNodeIdentifier.push_back("j" + tempCurrent_to_Voltage->name + "-1");
@@ -147,6 +148,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 						tempCurrent_to_Voltage = NULL;
 					}
 					else {
+
 						extraNodeIdentifier.push_back("j" + newComponent->name);
 						newComponent->extraNode = numNodes + extraNodeIdentifier.size();
 					}
@@ -154,6 +156,8 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 			}
 		}
 
+		// Initializes the nodalSystem filled with zeros
+		//numTotalNodes = numNodes + extraNodeIdentifier.size();
 		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
 		cout << "_____________________________________________________\n" << endl;
 
@@ -171,6 +175,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 	//	4. SET NODAL SYSTEM
 
 		numTotalNodes = numNodes + extraNodeIdentifier.size();
+
 		// The plus one and plus two in the size is to accept the line and column zero as the ground node
 		nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
 
