@@ -70,30 +70,53 @@ BJT::BJT(const string netlistLine) : Component(netlistLine) {
     Vt = 0.6;
     n = 0.5;
 
-//conductanceBC (GC)
+//Primeios valores de Vbc e Vbe são chutados
+    Vbc = 1;
+    Vbe = 1;
+
+
+
+//*************************************************************
+//Cálculo de parâmetros do modelo linearizado necessários para montar a estampa
+//*************************************************************
+
+//conductanceBC 
+double BJT::conductanceBC (/*inserir*/){
 	GC = (Isbc/Vt)*exp(Vbc/Vtbc);
+}
 
 //currentBC
+double BJT::currentBC (/*inserir*/){
 	IC = Isbc*(exp(Vbc/Vtbc)-1) - (GC * Vbc);
-
+}
 
 //Se PNP, inverte v
-	if (type == PNP) {
-		Vt = -0.6;
-	}
+if (type == PNP) {
+	Vt = -0.6;
+}
 
-//conductanceBE (GE)
+//conductanceBE
+double BJT::conductanceBE (/*inserir*/){
 	GE  = (Isbe/Vt)*exp(Vbe/Vtbe); 
+}
 
 //currentBE
-
+double BJT::currentBC (/*inserir*/){
 	 IE = Isbe*(exp(Vbc/Vtbe)-1) - (GE * Vbe);
+}
+
+
+//*************************************************************
+// Adicionando o efeito Early 
+//*************************************************************
+
+
+
+
 
 
 
 void BJT::SetTemplate 
-
-nodalSystem[][] += ;
 
 
 
