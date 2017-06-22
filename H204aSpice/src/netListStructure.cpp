@@ -166,18 +166,21 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		}
 
 		// Initializes the nodalSystem filled with zeros
-		//numTotalNodes = numNodes + extraNodeIdentifier.size();
+		//
+	
+	//	4. SET NODAL SYSTEM
 
+		numTotalNodes = numNodes + extraNodeIdentifier.size();
 		// The plus one and plus two in the size is to accept the line and column zero as the ground node
-		//nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
+		nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
 
 		// Allocates the size of the solutionMatrix (the plus two is because the first element of solution if the frequency)
-		//solutionMatrix = vector< Complex > (numTotalNodes + 1, 0.0);
+		solutionMatrix = vector< Complex > (numTotalNodes + 1, 0.0);
 
 		// Element netlist is created in this object
 		//isElementNetlistShared = false;
 
-		//calculateOperatingPoint();
+		calculateOperatingPoint();
 
 }
 
