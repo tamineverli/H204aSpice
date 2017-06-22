@@ -74,8 +74,6 @@ BJT::BJT(const string netlistLine) : Component(netlistLine) {
     Vbc = 1;
     Vbe = 1;
 
-
-
 //*************************************************************
 //Cálculo de parâmetros do modelo linearizado necessários para montar a estampa
 //*************************************************************

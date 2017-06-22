@@ -11,25 +11,27 @@ class netlistStructure
 {
     public:
         netlistStructure(const string validFilePath);
+        void setCommandLineParameters(string commandLine);
         virtual ~netlistStructure();
 
-		// Array containing the components read from the netlist and their parameters
-		vector<Component*> componentNetlist;
+        // Netlist related variables
 
-		// Identifier of extraNodes to build the first output file line
-		vector<string> extraNodeIdentifier;
+        	string netlistFilePath;	
+        	unsigned int numNodes, numTotalNodes;
+			vector<Component*> componentNetlist; 	//array containing components read from the netlist
+			vector<string> extraNodeIdentifier;		//stores extra nodes
 
-		// numRows = numNodes; numColumns = numNodes + 1 (the plus one is for the coupled solution vector as the last column)
-		vector < vector<Complex> > nodalSystem;
-
-		// Solution matrix, used in the end to write the output file
-		vector<Complex> solutionMatrix;
-
-		string netlistFilePath, stepType;
-		unsigned int numNodes, numTotalNodes, solutionIndex;
-		double beginFrequency, endFrequency, frequencyStep;
-		bool hasBJT, validCommandLine, isElementNetlistShared;
-
+		// Nodal System related variables
+			unsigned int solutionIndex;
+			vector < vector<Complex> > nodalSystem;	//numRows = numNodes; numColumns = numNodes + 1 (the plus one is for the coupled solution vector as the last column)
+			vector<Complex> solutionMatrix;			//store the system output after all calculations
+		
+		// Command Line related variables
+			string stepType;
+			double inicialFrequency, finalFrequency, step;
+		
+		// Other varaibles
+			bool hasBJT, validCommandLine, isElementNetlistShared;
 };
 
 #endif // NETLISTSTRUCTURE_H
