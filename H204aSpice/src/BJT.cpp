@@ -11,8 +11,8 @@ unsigned int blankPosition;
 	in >> nodeC >> nodeB >> nodeE >> type >> alfa >> alfaR >> Isbe >> VTbe >> Isbc >> VTbc >> VA >> C0be >> C1be >> C0bc >> C1bc;
 
 //Primeios valores de Vbc e Vbe são chutados
-    Vbc = 1;
-    Vbe = 1;
+    Vbc = 0.0;
+    Vbe = 0.0;
 }
 
 
@@ -109,46 +109,46 @@ void BJT::SetTemplate(void) {
             // Diodo
             //Resistor
             g=conductanceBC();
-            nodalSystem[node1][node1]+=g;
-            nodalSystem[node2][node2]+=g;
-            nodalSystem[node1][node2]-=g;
-            nodalSystem[node2][node1]-=g;
+            nodalSystem[nodeB][nodeB]+=g;
+            nodalSystem[nodeC][nodeC]+=g;
+            nodalSystem[nodeB][nodeC]-=g;
+            nodalSystem[nodeC][nodeB]-=g;
             //Fonte de corrente
             g=currentBC();
-            nodalSystem[node1][extraNode]+=g;
-            nodalSystem[node2][extraNode]-=g;
+            nodalSystem[nodeB][extraNode]+=g;
+            nodalSystem[nodeC][extraNode]-=g;
             //Fonte de corrente controlada
             g=alfa*conductanceBE();
-            nodalSystem[node1][node2]+=g;
-            nodalSystem[node2][node3]+=g;
-            nodalSystem[node1][node3]-=g;
-            nodalSystem[node2][node2]-=g;
+            nodalSystem[nodeB][nodeC]+=g;
+            nodalSystem[nodeC][nodeE]+=g;
+            nodalSystem[nodeB][nodeE]-=g;
+            nodalSystem[nodeC][nodeC]-=g;
             //Fonte de corrente
             g=alfa*currentBE();
-            nodalSystem[node1][extraNode]-=g;
-            nodalSystem[node2][extraNode]+=g;
+            nodalSystem[nodeB][extraNode]-=g;
+            nodalSystem[nodeC][extraNode]+=g;
             //Base Emissor
             // Diodo
             //Resistor
             g=conductanceBE();
-            nodalSystem[node2][node2]+=g;
-            nodalSystem[node3][node3]+=g;
-            nodalSystem[node2][node3]-=g;
-            nodalSystem[node3][node2]-=g;
+            nodalSystem[nodeC][nodeC]+=g;
+            nodalSystem[nodeE][nodeE]+=g;
+            nodalSystem[nodeC][nodeE]-=g;
+            nodalSystem[nodeE][nodeC]-=g;
             //Fonte de corrente
             g=currentBE();
-            nodalSystem[node2][extraNode]-=g;
-            nodalSystem[node3][extraNode]+=g;
+            nodalSystem[nodeC][extraNode]-=g;
+            nodalSystem[nodeE][extraNode]+=g;
             //Fonte de corrente controlada
             g=alfaR*conductanceBC();
-            nodalSystem[node2][node2]-=g;
-            nodalSystem[node3][node1]-=g;
-            nodalSystem[node2][node1]+=g;
-            nodalSystem[node3][node2]+=g;
+            nodalSystem[nodeC][nodeC]-=g;
+            nodalSystem[nodeE][nodeB]-=g;
+            nodalSystem[nodeC][nodeB]+=g;
+            nodalSystem[nodeE][nodeC]+=g;
             //Fonte de corrente
             g=alfaR*currentBC();
-            nodalSystem[node2][extraNode]+=g;
-            nodalSystem[node3][extraNode]-=g;
+            nodalSystem[nodeC][extraNode]+=g;
+            nodalSystem[nodeE][extraNode]-=g;
 
 #ifdef ativarEarly
             //Elementos entre da Coletor e Emissor
@@ -159,35 +159,35 @@ void BJT::SetTemplate(void) {
             g = fonteI0(); //(1 - alfa*node].alfaR));
             if(!strcmp(type,"PNP")) g=-g;
             //printf("%d  ", g);
-            nodalSystem[node1][extraNode]-=g;
-            nodalSystem[node3][extraNode]+=g;
+            nodalSystem[nodeB][extraNode]-=g;
+            nodalSystem[nodeE][extraNode]+=g;
 
             // G1*VBE
             g = finteG1(); //(1 - alfa*node].alfaR));
             if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
-            nodalSystem[node].1][node2]+=g;
-            nodalSystem[node3][node3]+=g;
-            nodalSystem[node1][node3]-=g;
-            nodalSystem[node3][node2]-=g;
+            nodalSystem[nodeB][nodeC]+=g;
+            nodalSystem[nodeE][nodeE]+=g;
+            nodalSystem[nodeB][nodeE]-=g;
+            nodalSystem[nodeE][nodeC]-=g;
 
             // G2*GBC
             g = fonteG2(); //(1 - alfa*node].alfaR));
             if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
-            nodalSystem[node1][node2]+=g;
-            nodalSystem[node3][node1]+=g;
-            nodalSystem[node1][node1]-=g;
-            nodalSystem[node3][node2]-=g;
+            nodalSystem[nodeB][nodeC]+=g;
+            nodalSystem[nodeE][nodeB]+=g;
+            nodalSystem[nodeB][nodeB]-=g;
+            nodalSystem[nodeE][nodeC]-=g;
 
             // G3*GCE
             g = fonteG3(); //(1 - alfa*node].alfaR));
             if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
-            nodalSystem[node1][node1]+=g;
-            nodalSystem[node3][node3]+=g;
-            nodalSystem[node1][node3]-=g;
-            nodalSystem[node3][node1]-=g;
+            nodalSystem[nodeB][nodeB]+=g;
+            nodalSystem[nodeE][nodeE]+=g;
+            nodalSystem[nodeB][nodeE]-=g;
+            nodalSystem[nodeE][nodeB]-=g;
 
 }
 
