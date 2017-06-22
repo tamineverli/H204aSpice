@@ -19,15 +19,18 @@ unsigned int blankPosition;
 }
 
 
+
+
+
 //*************************************************************
 //Cálculo de parâmetros do modelo linearizado necessários para montar a estampa
 //*************************************************************
 
-double BJT::conductanceBC (/*inserir*/){
+double BJT::conductanceBC (void){
 	GC = (Isbc/Vt)*exp(Vbc/Vtbc);
 }
 
-double BJT::currentBC (/*inserir*/){
+double BJT::currentBC (void){
 	IC = Isbc*(exp(Vbc/Vtbc)-1) - (GC * Vbc);
 }
 
@@ -36,13 +39,14 @@ if (type == "PNP") {
 	Vt = -Vt;
 }
 
-double BJT::conductanceBE (/*inserir*/){
+double BJT::conductanceBE (void){
 	GE  = (Isbe/Vt)*exp(Vbe/Vtbe); 
 }
 
-double BJT::currentBC (/*inserir*/){
+double BJT::currentBC (void){
 	IE = Isbe*(exp(Vbc/Vtbe)-1) - (GE * Vbe);
 }
+
 
 
 //*************************************************************
@@ -92,7 +96,6 @@ double BJT::fonteG3(void){
 
 double BJT::fonteI0(void){
    I0 = (fonteG3()*Vce - fonteG1()*Vbe - fonteG2()*Vbc - fonteG3()*Vce);
-
 }
 
 void BJT::SetTemplate {
@@ -101,46 +104,46 @@ void BJT::SetTemplate {
             // Diodo
             //Resistor
             g=GC;
-            Yn[nodalSystem].a][nodalSystem].a]+=;
-            Yn[nodalSystem].b][nodalSystem].b]+=g;
-            Yn[nodalSystem].a][nodalSystem].b]-=g;
-            Yn[nodalSystem].b][nodalSystem].a]-=g;
+            nodalSystem[node1][node1]+=g;
+            nodalSystem[node2][node2]+=g;
+            nodalSystem[node1][node2]-=g;
+            nodalSystem[node2][node1]-=g;
             //Fonte de corrente
             g=IC;
-            Yn[nodalSystem].a][nv+1]+=g;
-            Yn[nodalSystem].b][nv+1]-=g;
+            nodalSystem[node1][nv+1]+=g;
+            nodalSystem[node2][nv+1]-=g;
             //Fonte de corrente controlada
-            g=nodalSystem].alfa*GE;
-            Yn[nodalSystem].a][nodalSystem].b]+=g;
-            Yn[nodalSystem].b][nodalSystem].c]+=g;
-            Yn[nodalSystem].a][nodalSystem].c]-=g;
-            Yn[nodalSystem].b][nodalSystem].b]-=g;
+            g=alfa*GE;
+            nodalSystem[node1][node2]+=g;
+            nodalSystem[node2][node3]+=g;
+            nodalSystem[node1][node3]-=g;
+            nodalSystem[node2][node2]-=g;
             //Fonte de corrente
-            g=nodalSystem].alfa*IE;
-            Yn[nodalSystem].a][nv+1]-=g;
-            Yn[nodalSystem].b][nv+1]+=g;
+            g=alfa*IE;
+            nodalSystem[node1][nv+1]-=g;
+            nodalSystem[node2][nv+1]+=g;
             //Base Emissor
             // Diodo
             //Resistor
             g=GE;
-            Yn[nodalSystem].b][nodalSystem].b]+=g;
-            Yn[nodalSystem].c][nodalSystem].c]+=g;
-            Yn[nodalSystem].b][nodalSystem].c]-=g;
-            Yn[nodalSystem].c][nodalSystem].b]-=g;
+            nodalSystem[node2][node2]+=g;
+            nodalSystem[node3][node3]+=g;
+            nodalSystem[node2][node3]-=g;
+            nodalSystem[node3][node2]-=g;
             //Fonte de corrente
             g=IE;
-            Yn[nodalSystem].b][nv+1]-=g;
-            Yn[nodalSystem].c][nv+1]+=g;
+            nodalSystem[node2][nv+1]-=g;
+            nodalSystem[node3][nv+1]+=g;
             //Fonte de corrente controlada
-            g=nodalSystem].alfar*GC();
-            Yn[nodalSystem].b][nodalSystem].b]-=g;
-            Yn[nodalSystem].c][nodalSystem].a]-=g;
-            Yn[nodalSystem].b][nodalSystem].a]+=g;
-            Yn[nodalSystem].c][nodalSystem].b]+=g;
+            g=alfaR*GC();
+            nodalSystem[node2][node2]-=g;
+            nodalSystem[node3][node1]-=g;
+            nodalSystem[node2][node1]+=g;
+            nodalSystem[node3][node2]+=g;
             //Fonte de corrente
-            g=nodalSystem].alfar*IC;
-            Yn[nodalSystem].b][nv+1]+=g;
-            Yn[nodalSystem].c][nv+1]-=g;
+            g=alfaR*IC;
+            nodalSystem[node2][nv+1]+=g;
+            nodalSystem[node3][nv+1]-=g;
 
 #ifdef ativarEarly
             //Elementos entre da Coletor e Emissor
@@ -148,38 +151,38 @@ void BJT::SetTemplate {
             //Fonte de corrente
             // I0
 
-            g = I0; //(1 - nodalSystem].alfa*nodalSystem].alfar));
-            if(!strcmp(nodalSystem].tipo,"PNP")) g=-g;
+            g = I0; //(1 - alfa*node].alfaR));
+            if(!strcmp(type,"PNP")) g=-g;
             //printf("%d  ", g);
-            Yn[nodalSystem].a][nv+1]-=g;
-            Yn[nodalSystem].c][nv+1]+=g;
+            nodalSystem[node1][nv+1]-=g;
+            nodalSystem[node3][nv+1]+=g;
 
             // G1*VBE
-            g = G1; //(1 - nodalSystem].alfa*nodalSystem].alfar));
-            if(!strcmp(nodalSystem].tipo,"PNP")) g=-g;
+            g = G1; //(1 - alfa*node].alfaR));
+            if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
-            Yn[nodalSystem].a][nodalSystem].b]+=g;
-            Yn[nodalSystem].c][nodalSystem].c]+=g;
-            Yn[nodalSystem].a][nodalSystem].c]-=g;
-            Yn[nodalSystem].c][nodalSystem].b]-=g;
+            nodalSystem[node].1][node2]+=g;
+            nodalSystem[node3][node3]+=g;
+            nodalSystem[node1][node3]-=g;
+            nodalSystem[node3][node2]-=g;
 
             // G2*GBC
-            g = G2; //(1 - nodalSystem].alfa*nodalSystem].alfar));
-            if(!strcmp(nodalSystem].tipo,"PNP")) g=-g;
+            g = G2; //(1 - alfa*node].alfaR));
+            if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
-            Yn[nodalSystem].a][nodalSystem].b]+=g;
-            Yn[nodalSystem].c][nodalSystem].a]+=g;
-            Yn[nodalSystem].a][nodalSystem].a]-=g;
-            Yn[nodalSystem].c][nodalSystem].b]-=g;
+            nodalSystem[node1][node2]+=g;
+            nodalSystem[node3][node1]+=g;
+            nodalSystem[node1][node1]-=g;
+            nodalSystem[node3][node2]-=g;
 
             // G3*GCE
-            g = G3; //(1 - nodalSystem].alfa*nodalSystem].alfar));
-            if(!strcmp(nodalSystem].tipo,"PNP")) g=-g;
+            g = G3; //(1 - alfa*node].alfaR));
+            if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
-            Yn[nodalSystem].a][nodalSystem].a]+=g;
-            Yn[nodalSystem].c][nodalSystem].c]+=g;
-            Yn[nodalSystem].a][nodalSystem].c]-=g;
-            Yn[nodalSystem].c][nodalSystem].a]-=g;
+            nodalSystem[node1][node1]+=g;
+            nodalSystem[node3][node3]+=g;
+            nodalSystem[node1][node3]-=g;
+            nodalSystem[node3][node1]-=g;
 
 
 
