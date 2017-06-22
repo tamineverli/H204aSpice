@@ -131,7 +131,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 				componentNetlist.push_back(newComponent);
 				newComponent->print();
 
-				// If the element needs an extra node, initializes the extra node in extraNodeIdentifier vector and in the element itself
+				// If the element needs an extra node, initializes the extra node in extraNodeVector vector and in the element itself
 				if (setExtraNode) {
 
 					// If the element is a Current_to_Voltage controlled source, it needs two extra nodes
@@ -139,25 +139,23 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
  
 						Current_to_Voltage *tempCurrent_to_Voltage = dynamic_cast <Current_to_Voltage *> (newComponent);
 
-						extraNodeIdentifier.push_back("j" + tempCurrent_to_Voltage->name + "-1");
-						tempCurrent_to_Voltage->extraNode = numNodes + extraNodeIdentifier.size();
+						extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 1");
+						tempCurrent_to_Voltage->extraNode = numNodes + extraNodeVector.size();
 
-						extraNodeIdentifier.push_back("j" + tempCurrent_to_Voltage->name + "-2");
-						tempCurrent_to_Voltage->extraNode2 = numNodes + extraNodeIdentifier.size();
+						extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 2");
+						tempCurrent_to_Voltage->extraNode2 = numNodes + extraNodeVector.size();
 
 						tempCurrent_to_Voltage = NULL;
 					}
 					else {
 
-						extraNodeIdentifier.push_back("j" + newComponent->name);
-						newComponent->extraNode = numNodes + extraNodeIdentifier.size();
+						extraNodeVector.push_back("j" + newComponent->name);
+						newComponent->extraNode = numNodes + extraNodeVector.size();
 					}
 				}
 			}
 		}
 
-		// Initializes the nodalSystem filled with zeros
-		//numTotalNodes = numNodes + extraNodeIdentifier.size();
 		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
 		cout << "_____________________________________________________\n" << endl;
 
@@ -169,27 +167,28 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 			setCommandLineParameters("defautParameters");
 		}
 
-		// Initializes the nodalSystem filled with zeros
-		//
-	
 	//	4. SET NODAL SYSTEM
 
-		numTotalNodes = numNodes + extraNodeIdentifier.size();
+		//Initialize the nodal system with zeros - line and column [0,0] represent the ground
+		numTotalNodes = numNodes + extraNodeVector.size();
+		nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0)); 
 
-		// The plus one and plus two in the size is to accept the line and column zero as the ground node
-		nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
+		//Build nodal system
+		buildNodalSystem();
 
-		// Allocates the size of the solutionMatrix (the plus two is because the first element of solution if the frequency)
+		//Allocate memory for the output matrix - first line stores frequency values
 		solutionMatrix = vector< Complex > (numTotalNodes + 1, 0.0);
 
-		// Element netlist is created in this object
+		//Element netlist is created in this object
 		//isElementNetlistShared = false;
 
-		calculateOperatingPoint();
+	//	5. USE NEWTON RAPHSON TO SET BJT VOLTAGES AND CURRENTS
+
+	//	6. UPDATE NODAL SYSTEM
 
 }
 
-// Set frequency analysis parameters
+//Set frequency analysis parameters according to a command line
 void netlistStructure::setCommandLineParameters(string commandLine) {
 
 	/* COMMAND LINE PARAMETERS:
@@ -242,9 +241,51 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 	cout << "> Step = " << step << endl;
 	cout << "> inicialFrequency = " << inicialFrequency << endl;
 	cout << "> finalFrequency = " << finalFrequency << endl;
+
+	return();
 }
 
-netlistStructure::~netlistStructure()
-{
-    //dtor
+//Build nodal system for a given frequency
+void netlistStructure::buildNodalSystem(const double frequency) {
+
+	return();
+}
+
+//Solve the nodal system matrix
+void netlistStructure::solveNodalSystem() {
+
+	return();
+}
+
+//Compute BJT tensions using Newton Raphson method
+void netlistStructure::newtonRaphson() {
+
+	return();
+}
+
+//Find operating point for all transistors
+void netlistStructure::findOperatingPoint() {
+
+	return();
+}
+
+//Operating point output
+void netlistStructure::printOperatingPoint() {
+
+	return();
+}
+
+//Perform frequency analysis
+void netlistStructure::freqAnalysis() {
+
+	return();
+}
+
+//Frequency analysis output
+void netlistStructure::printFreqAnalysis() {
+
+	return();
+}
+
+netlistStructure::~netlistStructure() {
 }

@@ -22,13 +22,12 @@ class Component
 		virtual void print();
 		virtual ~Component();
 
-		char type;					//First letter of netlist line read
-
-		string netlistLine;			//Element line read from netlist
-		string name;			//Element name, found after first letter of netlist line
+		string name;			//Component identification
+		string netlistLine;		//Line extracted from netlist
+		char type;				//Component type
 
 		unsigned int extraNode;		//For components that need an extra node
-		static double frequency;	//Omega, used to build nodalSystem
+		static double frequency;	//Frequency - static (applies for all circuit components)
 };
 
 #endif // COMPONENT_H
