@@ -113,6 +113,12 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 						tempCouple = NULL;
 						break;
 
+				//Command Line
+					case '.':
+						setCommandLineParameters(fileLine);
+						validComponent = false;
+						break;
+
 				//Defaut
 					default:
 						cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado...\n" << endl;
@@ -124,54 +130,162 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 				// Add new component to netlist
 				componentNetlist.push_back(newComponent);
 				newComponent->print();
-/*
-				// If the element needs an extra node, initializes the extra node in extraNodeIdentifier vector and in the element itself
+
+				// If the element needs an extra node, initializes the extra node in extraNodeVector vector and in the element itself
 				if (setExtraNode) {
 
-					// If the element is a TransresistanceAmplifier, it needs two extra nodes
-					if (elementType == 'H') {
+					// If the element is a Current_to_Voltage controlled source, it needs two extra nodes
+					if (componentType == 'H') {
+ 
+						Current_to_Voltage *tempCurrent_to_Voltage = dynamic_cast <Current_to_Voltage *> (newComponent);
 
-						TransresistanceAmplifier *tempTransresistanceAmplifier = dynamic_cast <TransresistanceAmplifier *> (tempElement);
+						extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 1");
+						tempCurrent_to_Voltage->extraNode = numNodes + extraNodeVector.size();
 
-						extraNodeIdentifier.push_back("j" + tempTransresistanceAmplifier->identifier + "-1");
-						tempTransresistanceAmplifier->extraNode = numNodes + extraNodeIdentifier.size();
+						extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 2");
+						tempCurrent_to_Voltage->extraNode2 = numNodes + extraNodeVector.size();
 
-						extraNodeIdentifier.push_back("j" + tempTransresistanceAmplifier->identifier + "-2");
-						tempTransresistanceAmplifier->extraNode2 = numNodes + extraNodeIdentifier.size();
-
-						tempTransresistanceAmplifier = NULL;
+						tempCurrent_to_Voltage = NULL;
 					}
 					else {
 
-						extraNodeIdentifier.push_back("j" + tempElement->identifier);
-						tempElement->extraNode = numNodes + extraNodeIdentifier.size();
+						extraNodeVector.push_back("j" + newComponent->name);
+						newComponent->extraNode = numNodes + extraNodeVector.size();
 					}
-				} */
+				}
 			}
 		}
 
-		// Initializes the nodalSystem filled with zeros
-		//numTotalNodes = numNodes + extraNodeIdentifier.size();
 		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
 		cout << "_____________________________________________________\n" << endl;
 
 		newComponent = NULL;
 		netlistFile.close();
 
-		// The plus one and plus two in the size is to accept the line and column zero as the ground node
-		//nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
+		//Check if frequency analysis parameters have been set
+		if (!validCommandLine) {
+			setCommandLineParameters("defautParameters");
+		}
 
-		// Allocates the size of the solutionMatrix (the plus two is because the first element of solution if the frequency)
-		//solutionMatrix = vector< Complex > (numTotalNodes + 1, 0.0);
+	//	4. SET NODAL SYSTEM
 
-		// Element netlist is created in this object
+		//Initialize the nodal system with zeros - line and column [0,0] represent the ground
+		numTotalNodes = numNodes + extraNodeVector.size();
+		nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0)); 
+
+		//Build nodal system
+		buildNodalSystem();
+
+		//Allocate memory for the output matrix - first line stores frequency values
+		solutionMatrix = vector< Complex > (numTotalNodes + 1, 0.0);
+
+		//Element netlist is created in this object
 		//isElementNetlistShared = false;
 
-		//calculateOperatingPoint();
+	//	5. USE NEWTON RAPHSON TO SET BJT VOLTAGES AND CURRENTS
+
+	//	6. UPDATE NODAL SYSTEM
 
 }
 
-netlistStructure::~netlistStructure()
-{
-    //dtor
+//Set frequency analysis parameters according to a command line
+void netlistStructure::setCommandLineParameters(string commandLine) {
+
+	/* COMMAND LINE PARAMETERS:
+		1. stepType (determines how the frequency step is calculated):
+			- LIN (absolute) / DEC (decade) / OCT (octave)
+		2. step
+		3. inicialFrequency
+		4. finalFrequency
+	 */
+
+	const string defautStepType = "LIN";
+	const double defautInicialFreq = 0;
+	const double defautFinalFreq = 1;
+	const double defautStep = 1;
+
+	//Set parameters with defaut values if necessary
+	if (commandLine == "defautParameters") {
+		stepType = defautStepType;
+		step = defautStep;
+		inicialFrequency = defautInicialFreq;
+		finalFrequency = defautFinalFreq;
+
+		Component::setFrequency(inicialFrequency);
+		validCommandLine = true;
+
+		cout << "\n Parametros de analise em frequencia configurados com valores padrao:" << endl;
+	}
+	else {
+		// First option should be "AC", so we can skip it
+		unsigned int blankPosition;
+		blankPosition = commandLine.find(" ");
+		istringstream commandLineInput(commandLine.substr(blankPosition + 1));
+
+		commandLineInput >> stepType >> step >> inicialFrequency >> finalFrequency;
+
+		//If step type is not valid, set it with its defaut value
+		if ((stepType != "DEC") && (stepType != "OCT") && (stepType != "LIN")) {
+			cout << "\n ALERTA: tipo de analise invalido. Opcao padrao selecionada." << endl;
+			stepType = defautStepType;
+		}
+
+		// Sets the static variable frequency to the begin frequency
+		Component::setFrequency(inicialFrequency);
+		validCommandLine = true;
+
+		cout << "\n Parametros de analise em frequencia configurados com sucesso:" << endl;
+	}
+
+	cout << "> Step Type = " << stepType << endl;
+	cout << "> Step = " << step << endl;
+	cout << "> inicialFrequency = " << inicialFrequency << endl;
+	cout << "> finalFrequency = " << finalFrequency << endl;
+
+	return();
+}
+
+//Build nodal system for a given frequency
+void netlistStructure::buildNodalSystem(const double frequency) {
+
+	return();
+}
+
+//Solve the nodal system matrix
+void netlistStructure::solveNodalSystem() {
+
+	return();
+}
+
+//Compute BJT tensions using Newton Raphson method
+void netlistStructure::newtonRaphson() {
+
+	return();
+}
+
+//Find operating point for all transistors
+void netlistStructure::findOperatingPoint() {
+
+	return();
+}
+
+//Operating point output
+void netlistStructure::printOperatingPoint() {
+
+	return();
+}
+
+//Perform frequency analysis
+void netlistStructure::freqAnalysis() {
+
+	return();
+}
+
+//Frequency analysis output
+void netlistStructure::printFreqAnalysis() {
+
+	return();
+}
+
+netlistStructure::~netlistStructure() {
 }

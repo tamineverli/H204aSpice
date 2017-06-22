@@ -49,16 +49,6 @@ int main(int argc, char** argv)
 
 //  1. DECLARE MAIN PROGRAM VARIABLES
 
-	//int numero_variaveis;
-	//string metodo = "DC";
-	//double passo = 0.1;
-	//double tempo_final = 1.0;
-	//unsigned passos_por_ponto = 1;
-
-	//int totalNodeNum;
-	//string netlistName, commandLine, outputFileName;
-
-
 //  2. READ NETLIST
 
 	//	2.1 Ask for a valid netlist file name
@@ -82,76 +72,24 @@ int main(int argc, char** argv)
 		}
 
 	// 2.5 Call netlist builder
-
 		programHeader();
 		cout << "\nLendo NETLIST...\n\n" << endl;
-		netlistStructure netlistStructure(netlistPath); //This is where the fun begins
+		myCircuit netlistStructure(netlistPath); //This is where the fun begins
 
 		cout << "Pronto para iniciar a analise!" << endl;
 		cout << "Pressione qualquer tecla para continuar..." << endl;
 		cin.get();
 
-/*
+//	3. OPERATING POINT
 
+		//myCircuit.findOperatingPoint();
+		//myCircuit.printOperatingPoint();
 
-	vector<string> lista;
-	vector<Elemento> netlist(1);
-	std::vector<std::vector<long double>> resultados;
-	// vector<Elemento> componentesVariantes;
-	// vector<Elemento> componentesNaoLineares;
+//	4. FREQUENCY ANALYSIS
 
+		//myCircuit.freqAnalysis();
+		//myCircuit.printFreqAnalysis();
 
-
-    // Reading the netlist - can take optional command line argument as filename*/
-/*		string nomeArquivo = "";
-	if (argc == 2)
-		nomeArquivo = argv[1];
-	readNetList(lista, netlist, componentesVariantes, argc, nomeArquivo, numero_variaveis, tempo_final, passo, metodo, passos_por_ponto, componentesNaoLineares);
-
-#ifdef DEBUG
-	cout << "Metodo de simulacao: " << metodo << endl;
-#endif
-
-	/* DC */
-	/* Lista tudo */
-/*		vector<vector<long double>> Yn(numero_variaveis+1, vector<long double>(numero_variaveis+2));
-
-	listarVariaveis(lista, numero_variaveis);
-	cin.get();
-
-	mostrarNetlist(netlist);
-	cin.get();
-
-	/* Monta o sistema nodal modificado */
-//	montarSistemaDC(netlist, Yn, numero_variaveis);
-
-	/* Resolve o sistema
-	if (resolverSistema(Yn, numero_variaveis))
-	{
-		cin.get();
-		exit(ERRO_RESOLUCAO_SISTEMA);
-	}
-	#ifdef DEBUG
-		/*Opcional: Mostra o sistemar resolvido*/
-//		mostrarSistema("Sistema resolvido: ", Yn, numero_variaveis);
-	//	cin.get();
-//	#endif
-
-	/* Mostra solucao
-	cout << "Solucao:" << endl;
-	string txt = "Tesao";
-
-	for (int i=1; i<=numero_variaveis; i++)
-	{
-		if (i==numero_nos+1)
-		{
-			txt = "Corrente";
-		}
-		cout << txt << " " << lista[i] << ": " << Yn[i][numero_variaveis+1] << endl;
-	}
-
-	cin.get();
-*/
   return 0;
 
 }

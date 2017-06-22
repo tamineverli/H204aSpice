@@ -13,11 +13,11 @@ class netlistStructure
         netlistStructure(const string validFilePath);
         virtual ~netlistStructure();
 
-		// Array containing the components read from the netlist and their parameters
+		//Array that stores all the components extracted from the netlist
 		vector<Component*> componentNetlist;
 
-		// Identifier of extraNodes to build the first output file line
-		vector<string> extraNodeIdentifier;
+		//Vector to support identification of extra nodes
+		vector<string> extraNodeVector;
 
 		// numRows = numNodes; numColumns = numNodes + 1 (the plus one is for the coupled solution vector as the last column)
 		vector < vector<Complex> > nodalSystem;
