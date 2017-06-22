@@ -23,13 +23,11 @@ BJT nome_BJT = new BJT(string_doarquivo)
 //*************************************************************
 
 double BJT::conductanceBC (void){
-	GC = (Isbc/Vt)*exp(Vbc/Vtbc);
-	return GC;
+	return (Isbc/Vt)*exp(Vbc/Vtbc);
 }
 
 double BJT::currentBC (void){
-	IC = Isbc*(exp(Vbc/Vtbc)-1) - (GC * Vbc);
-	return IC;
+	return  Isbc*(exp(Vbc/Vtbc)-1) - (GC * Vbc);
 }
 
 //Se PNP, inverte v
@@ -38,13 +36,11 @@ if (type == "PNP") {
 }
 
 double BJT::conductanceBE (void){
-	GE  = (Isbe/Vt)*exp(Vbe/Vtbe); 
-	return GE;
+	return (Isbe/Vt)*exp(Vbe/Vtbe); 
 }
 
 double BJT::currentBE (void){
-	IE = Isbe*(exp(Vbc/Vtbe)-1) - (GE * Vbe);
-	return IE;
+	return  Isbe*(exp(Vbc/Vtbe)-1) - (GE * Vbe);
 }
 
 
@@ -63,8 +59,7 @@ double BJT::iDE(void){
 		Vt=-Vt;
 	}
 */
-	iDE = ((Isbe)*exp(Vbe/Vtbe) - 1);
-	return iDE;
+	return ((Isbe)*exp(Vbe/Vtbe) - 1);
 }
 
 //Corrente que passa no diodo entre base e coletor
@@ -77,30 +72,23 @@ double BJT::iDC(void){
 	}
 */
 
-	iDC = ((Isbc)*exp(Vbc/Vtbc) - 1);
-	return iDC;
+	return ((Isbc)*exp(Vbc/Vtbc) - 1);
 }
 
 double BJT::fonteG1(void){
-	V2 = Vt;
-
-	G1 = (alfa*(Isbe/Vtbe)*exp(Vbe/Vtbe)*(V2/VA));
-	return G1;
+	return (alfa*(Isbe/Vtbe)*exp(Vbe/Vtbe)*(Vt/VA));
 }
 
 double BJT::fonteG2(void){
-	G2 = -1*((Isbc/Vtbc)*exp(Vb/Vtbe)*(V2/VA));
-	return G2;
+	return -1*((Isbc/Vtbc)*exp(Vb/Vtbe)*(Vt/VA));
 }
 
 double BJT::fonteG3(void){
-	G3 = ((alfa*iDE() - iDC())/(VA));
-	return G3;
+	return  ((alfa*iDE() - iDC())/(VA));
 }
 
 double BJT::fonteI0(void){
-   I0 = (fonteG3()*Vce - fonteG1()*Vbe - fonteG2()*Vbc - fonteG3()*Vce);
-   return I0;
+   return (fonteG3()*Vce - fonteG1()*Vbe - fonteG2()*Vbc - fonteG3()*Vce);
 }
 
 void BJT::SetTemplate(void) {
@@ -163,7 +151,7 @@ void BJT::SetTemplate(void) {
             nodalSystem[nodeE][extraNode]+=g;
 
             // G1*VBE
-            g = finteG1(); //(1 - alfa*node].alfaR));
+            g = fonteG1(); //(1 - alfa*node].alfaR));
             if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
             nodalSystem[nodeB][nodeC]+=g;
