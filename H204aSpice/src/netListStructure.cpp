@@ -156,22 +156,25 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 			}
 		}
 
-		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
-		cout << "_____________________________________________________\n" << endl;
-
 		newComponent = NULL;
 		netlistFile.close();
 
-		//Check if frequency analysis parameters have been set
-		if (!validCommandLine) {
-			setCommandLineParameters("defautParameters");
-		}
+		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
+		cout << "_____________________________________________________\n" << endl;
+
+	//
+			//Update total number of nodes, considering extra nodes
+			numTotalNodes = numNodes + extraNodeVector.size();
+
+			//Check if frequency analysis parameters have been set
+			if (!validCommandLine) {
+				setCommandLineParameters("defautParameters");
+			}
 
 	//	4. SET NODAL SYSTEM
 
 		//Initialize the nodal system with zeros - line and column [0,0] represent the ground
-		numTotalNodes = numNodes + extraNodeVector.size();
-		nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0)); 
+		
 
 		//Build nodal system
 		buildNodalSystem();
@@ -248,6 +251,14 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 //Build nodal system for a given frequency
 void netlistStructure::buildNodalSystem(const double frequency) {
 
+	Element::setFrequency(frequency);
+
+	// Fills the nodalAnalysisMatrix with zeros. The plus one and plus two in the size is to accept the line and column zero as the ground node
+	nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0)); 
+
+	for (unsigned int index = 0; index < elementNetlist.size(); ++index) {
+		elementNetlist.at(index)->setTemplate(nodalAnalysisMatrix);
+	}
 	return();
 }
 
