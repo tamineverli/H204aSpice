@@ -27,6 +27,7 @@ class Component
 		char type;				//Component type
 
 		unsigned int extraNode;		//For components that need an extra node
+		
 		static double frequency;	//Frequency - static (applies for all circuit components)
 };
 

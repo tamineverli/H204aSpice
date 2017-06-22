@@ -22,9 +22,7 @@ class BJT : public Component
         double Vt = 0.6;
         double n = 0.5;
 
-        double GC, GE, IC, IE, iDE, iDC = 0;
-
-
+        double GC, GE, IC, IE, iDE, iDC, g= 0;
 
     protected:
 
