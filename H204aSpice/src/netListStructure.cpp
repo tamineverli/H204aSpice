@@ -212,9 +212,9 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 void netlistStructure::setCommandLineParameters(string commandLine) {
 
 	/* COMMAND LINE PARAMETERS:
-		1. stepType (determines how the frequency passo is calculated):
+		1. stepType (determines how the frequency step is calculated):
 			- LIN (absolute) / DEC (decade) / OCT (octave)
-		2. passo
+		2. step
 		3. inicialFrequency
 		4. finalFrequency
 	 */
@@ -242,9 +242,9 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 		blankPosition = commandLine.find(" ");
 		istringstream commandLineInput(commandLine.substr(blankPosition + 1));
 
-		commandLineInput >> stepType >> passo >> inicialFrequency >> finalFrequency;
+		commandLineInput >> stepType >> step >> inicialFrequency >> finalFrequency;
 
-		//If passo type is not valid, set it with its defaut value
+		//If step type is not valid, set it with its defaut value
 		if ((stepType != "DEC") && (stepType != "OCT") && (stepType != "LIN")) {
 			cout << "\n ALERTA: tipo de analise invalido. Opcao padrao selecionada." << endl;
 			stepType = defautStepType;
@@ -258,7 +258,7 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 	}
 
 	cout << "> Step Type = " << stepType << endl;
-	cout << "> Step = " << passo << endl;
+	cout << "> Step = " << step << endl;
 	cout << "> inicialFrequency = " << inicialFrequency << endl;
 	cout << "> finalFrequency = " << finalFrequency << endl;
 
@@ -450,7 +450,7 @@ void netlistStructure::freqAnalysis() {
 	const double defautStep = 1;
 	string outputFileName;
 	ofstream outputFile;
-	double frequency, passo, stepScaleFactor;
+	double frequency, step, stepScaleFactor;
 	unsigned int numRows = 0;
 
 	// Writes the results of the hole analysis to the output file
@@ -475,12 +475,12 @@ void netlistStructure::freqAnalysis() {
 	outputFile << endl;
 
 	if (stepType == defautStepType) {
-		passo = ceil((finalFrequency - inicialFrequency)/(frequencyStep - 1));
-		stepScaleFactor = passo/inicialFrequency + 1;
+		step = ceil((finalFrequency - inicialFrequency)/(frequencyStep - 1));
+		stepScaleFactor = step/inicialFrequency + 1;
 	}
 	else {
 
-		passo = defautStep;
+		step = defautStep;
 
 		if (stepType == "DEC") {
 			stepScaleFactor = pow(10.0, (1/(frequencyStep - 1)));
@@ -490,7 +490,7 @@ void netlistStructure::freqAnalysis() {
 		}
 	}
 
-	for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += passo) {
+	for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
 
 		solveNodalSystem(2*PI*frequency);
 		if (solveNodalSystem()) {
@@ -515,9 +515,9 @@ void netlistStructure::freqAnalysis() {
 		outputFile << endl;
 
 		if (stepType == "LIN")
-			stepScaleFactor = passo/frequency + 1;
+			stepScaleFactor = step/frequency + 1;
 		else
-			passo = frequency*(stepScaleFactor - 1);
+			step = frequency*(stepScaleFactor - 1);
 
 		++numRows;
 	}
