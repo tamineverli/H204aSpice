@@ -20,11 +20,11 @@ BJT nome_BJT = new BJT(string_doarquivo)
 //Cálculo de parâmetros do modelo linearizado necessários para montar a estampa
 //*************************************************************
 double BJT::conductanceBC (void){
-	return (Isbc/Vt)*exp((Vbc*step)/Vtbc);
+	return (Isbc/Vt)*exp(Vbc/Vtbc);
 }
 
 double BJT::currentBC (void){
-	return  Isbc*(exp((Vbc*step)/Vtbc)-1) - (conductanceBC() * (Vbc*step));
+	return  Isbc*(exp(Vbc/Vtbc)-1) - (conductanceBC() * Vbc);
 }
 
 //Se PNP, inverte v
@@ -33,11 +33,11 @@ if (type == "PNP") {
 }
 
 double BJT::conductanceBE (void){
-	return (Isbe/Vt)*exp((Vbe*step)/Vtbe); 
+	return (Isbe/Vt)*exp(Vbe/Vtbe); 
 }
 
 double BJT::currentBE (void){
-	return  Isbe*(exp((Vbc*step)/Vtbe)-1) - (conductanceBE() * (Vbe*step));
+	return  Isbe*(exp(Vbc/Vtbe)-1) - (conductanceBE() *Vbe);
 }
 
 
@@ -50,34 +50,34 @@ double BJT::currentBE (void){
 double BJT::iDE(void){
 
 /*  !!!!!   TENHO QUE COLOCAR ISSO NA PRIMEIRA ITERAÇÃO LÁ FORA	   !!!!!!
-	(Vbe*step) = Vt;
+	(Vbe*) = Vt;
 
 	if (type == "PNP"){
 		Vt=-Vt;
 	}
 */
-	return ((Isbe)*exp((Vbe*step)/Vtbe) - 1);
+	return ((Isbe)*exp(Vbe/Vtbe) - 1);
 }
 
 //Corrente que passa no diodo entre base e coletor
  double BJT::iDC(void){
 /*  !!!!!   TENHO QUE COLOCAR ISSO NA PRIMEIRA ITERAÇÃO LÁ FORA	   !!!!!!
-	(Vbc*step) = Vt;
+	Vbc = Vt;
 
 	if (type == "PNP"){
 		Vt=-Vt;
 	}
 */
 
-	return ((Isbc)*exp((Vbc*step)/Vtbc) - 1);
+	return ((Isbc)*exp(Vbc/Vtbc) - 1);
 }
 
 double BJT::fonteG1(void){
-	return (alfa*(Isbe/Vtbe)*exp((Vbe*step)/Vtbe)*(Vt/VA));
-}
+	return (alfa*(Isbe/Vtbe)*exp((Vbe/Vtbe)*(Vt/VA));
+
 
 double BJT::fonteG2(void){
-	return -1*((Isbc/Vtbc)*exp((Vbc*step)/Vtbe)*(Vt/VA));
+	return -1*((Isbc/Vtbc)*exp(Vbc/Vtbe)*(Vt/VA));
 }
 
 double BJT::fonteG3(void){
@@ -88,17 +88,9 @@ double BJT::fonteI0(void){
     
 //    Vce = nodalAnalysisMatrix[!!!!!!!!!COLETOR!!!!!!!!!!!!] - nodalAnalysisMatrix[!!!!!!!!!!!!EMISSOR!!!!!!!!!]; //vCE
 
-   return (fonteG3()*Vce - fonteG1()*(Vbe*step) - fonteG2()*(Vbc*step) - fonteG3()*Vce);
+   return (fonteG3()*Vce - fonteG1()*(Vbe*) - fonteG2()*Vbc - fonteG3()*Vce);
 }
 
-
-void Component::setStep(const double newstep) {
-      step = newstep;
-}
-
-double Component::getStep() {
-      return step;
-}
 
 
 void BJT::SetTemplate(void) {
@@ -148,6 +140,7 @@ void BJT::SetTemplate(void) {
             nodalSystem[nodeC][extraNode]+=g;
             nodalSystem[nodeE][extraNode]-=g;
 
+
 #ifdef ativarEarly
             //Elementos entre da Coletor e Emissor
             //implementaçao de early
@@ -160,7 +153,7 @@ void BJT::SetTemplate(void) {
             nodalSystem[nodeB][extraNode]-=g;
             nodalSystem[nodeE][extraNode]+=g;
 
-            // G1*(Vbe*step)
+            // G1*(Vbe*)
             g = fonteG1(); //(1 - alfa*node].alfaR));
             if(!strcmp(type,"PNP")) g=-g;
             // printf("%d  ", g);
@@ -189,8 +182,8 @@ void BJT::SetTemplate(void) {
 
 
 
-if ( Vbc*step == Vt/2) {
-        Cr = C0bc/(1-(Vbc*step/Vt))^n;
+if (Vbc == Vt/2) {
+        Cr = C0bc/(1-VbcVt)^n;
 
       capacitiveAdmittance = Complex(0.0, frequency*Cr);
 
@@ -201,8 +194,8 @@ if ( Vbc*step == Vt/2) {
 }
 
 
-if (Vbc*step > 0) {
-      Cd = (C1bc*exp(Vbc*step/VT)-1);
+if (Vbc > 0) {
+      Cd = (C1bc*expVbcVT)-1;
       capacitiveAdmittance = Complex(0.0, frequency*Cd);
 
       nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
@@ -211,8 +204,8 @@ if (Vbc*step > 0) {
       nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
 }
 
-if ( Vbe*step == Vt/2) {
-        Cr = C0bc/(1-(Vbe*step/Vt))^n;
+if ( Vbe == Vt/2) {
+        Cr = C0bc/(1-(Vbe/Vt))^n;
 
       capacitiveAdmittance = Complex(0.0, frequency*Cr);
 
@@ -223,8 +216,8 @@ if ( Vbe*step == Vt/2) {
 }
 
 
-if (Vbe*step > 0) {
-      Cd = (C1bc*exp(Vbe*step/VT)-1);
+if (Vbe* > 0) {
+      Cd = (C1bc*exp(Vbe/VT)-1);
       capacitiveAdmittance = Complex(0.0, frequency*Cd);
 
       nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
