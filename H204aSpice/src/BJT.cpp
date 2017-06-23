@@ -24,7 +24,7 @@ double BJT::conductanceBC (void){
 }
 
 double BJT::currentBC (void){
-	return  Isbc*(exp((Vbc*step)/Vtbc)-1) - (GC * (Vbc*step));
+	return  Isbc*(exp((Vbc*step)/Vtbc)-1) - (conductanceBC() * (Vbc*step));
 }
 
 //Se PNP, inverte v
@@ -37,7 +37,7 @@ double BJT::conductanceBE (void){
 }
 
 double BJT::currentBE (void){
-	return  Isbe*(exp((Vbc*step)/Vtbe)-1) - (GE * (Vbe*step));
+	return  Isbe*(exp((Vbc*step)/Vtbe)-1) - (conductanceBE() * (Vbe*step));
 }
 
 
