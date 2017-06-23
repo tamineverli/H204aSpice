@@ -527,5 +527,6 @@ void netlistStructure::freqAnalysis() {
 }
 
 
+
 netlistStructure::~netlistStructure() {
 }
