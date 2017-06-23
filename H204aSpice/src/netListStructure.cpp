@@ -446,6 +446,7 @@ void netlistStructure::printOperatingPoint() {
 //Perform frequency analysis
 void netlistStructure::freqAnalysis() {
 	
+	const string defautStepType = "LIN";
 	const double defautStep = 1;
 	string outputFileName;
 	ofstream outputFile;
@@ -473,7 +474,7 @@ void netlistStructure::freqAnalysis() {
 	}
 	outputFile << endl;
 
-	if (stepType == "LIN") {
+	if (stepType == defautStepType) {
 		step = ceil((finalFrequency - inicialFrequency)/(frequencyStep - 1));
 		stepScaleFactor = step/inicialFrequency + 1;
 	}
@@ -524,16 +525,8 @@ void netlistStructure::freqAnalysis() {
 	outputFile.close();
 	cout << "Analise em frequencia realizada com sucesso. Tabela com " << numRows << " pontos registrada no arquivo '" << outputFileName << "'." << endl << endl;
 }
-}
 
-//Frequency analysis output
-void netlistStructure::printFreqAnalysis() {
 
-	return();
-}
-
-	return;
-}
 
 //Frequency analysis output
 void netlistStructure::printFreqAnalysis() {
