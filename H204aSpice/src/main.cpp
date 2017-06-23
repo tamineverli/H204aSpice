@@ -54,19 +54,19 @@ int main(int argc, char** argv)
 	//	2.1 Ask for a valid netlist file name
 		string netlistPath;
 		ifstream netlistFile;
-	
-	//	2.2 Ask for a valid netlist file name	
+
+	//	2.2 Ask for a valid netlist file name
 		programHeader();
 		netlistPath = askNetlistPath();
-		
-	//	2.3 Check if the file exists	
+
+	//	2.3 Check if the file exists
 	    netlistFile.open(netlistPath.c_str());
 
 	//	2.4 If file name is invalid, try again
 		while (!netlistFile) {
 	        programHeader();
 			cout << "ARQUIVO INVALIDO \n" << endl;
-		
+
 			netlistPath = askNetlistPath();
 		    netlistFile.open(netlistPath.c_str());
 		}
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 	// 2.5 Call netlist builder
 		programHeader();
 		cout << "\nLendo NETLIST...\n\n" << endl;
-		myCircuit netlistStructure(netlistPath); //This is where the fun begins
+		netlistStructure netlistStructure(netlistPath); //This is where the fun begins
 
 		cout << "Pronto para iniciar a analise!" << endl;
 		cout << "Pressione qualquer tecla para continuar..." << endl;

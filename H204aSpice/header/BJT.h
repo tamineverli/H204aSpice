@@ -2,6 +2,7 @@
 #define BJT_H
 
 #include <Component.h>
+
 #include <string>
 #include <complex>
 #include <vector>
@@ -10,24 +11,30 @@
 class BJT : public Component
 {
     public:
-        BJT();
+        BJT(string netlistLine);
         virtual ~BJT();
-        virtual double BJT::conductanceBC(void);
-        virtual double BJT::currentBC (void);
-        virtual double BJT::conductanceBE(void); 
-        virtual double BJT::currentBC (void);
+        void SetTemplate(ComplexVector &nodalSystem);
+        virtual double conductanceBC();
+        virtual double currentBC();
+        virtual double conductanceBE();
+        virtual double currentBE();
+        virtual double iDE();
+        virtual double iDC();
+        virtual double fonteG1();
+        virtual double fonteG2();
+        virtual double fonteG3();
+        virtual double fonteI0();
 
-        unsigned int nodeB, nodeC, nodeE = 0;
-        double alfa, alfaR, Isbe, VTbe, Isbc, VTbc, VA, C0be, C1be, C0bc, C1bc, Vbe, Vbc = 0;
-        double Vt = 0.6;
-        double n = 0.5;
+        unsigned int nodeB, nodeC, nodeE;
+        double alfa, alfaR, Isbe, VTbe, Isbc, VTbc, VA, C0be, C1be, C0bc, C1bc;
+        double Vt;
+        double n;
 
-        double GC, GE, IC, IE, iDE, iDC, g= 0;
-        double Vbc, Vbr, Vce;
+        char *BJT_type;
 
-    protected:
+        double GC, GE, IC, IE, g;
+        double Vbc, Vbe, Vce;
 
-    private:
 };
 
 #endif // BJT_H

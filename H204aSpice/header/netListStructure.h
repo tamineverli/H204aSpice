@@ -14,19 +14,19 @@ class netlistStructure
         //Set frequency analysis parameters according to a command line
         void setCommandLineParameters(string commandLine);
         //Build nodal system for a given frequency
-        void netlistStructure::buildNodalSystem(const double frequency);
+        void buildNodalSystem(const double frequency);
         //Solve the nodal system matrix
-        int netlistStructure::solveNodalSystem();
+        int solveNodalSystem();
         //Compute BJT tensions using Newton Raphson method
-        void netlistStructure::newtonRaphson();
+        void newtonRaphson();
         //Find operating point for all transistors
-		void netlistStructure::findOperatingPoint();
+		void findOperatingPoint();
 		//Operating point output
-		void netlistStructure::printOperatingPoint();
+		void printOperatingPoint();
 		//Perform frequency analysis
-		void netlistStructure::freqAnalysis();
+		void freqAnalysis();
 		//Frequency analysis output
-		void netlistStructure::printFreqAnalysis();
+		void printFreqAnalysis();
 
 
 
@@ -49,6 +49,8 @@ class netlistStructure
 		unsigned int numNodes, numTotalNodes, solutionIndex;
 		double beginFrequency, endFrequency, frequencyStep;
 		bool hasBJT, validCommandLine, isElementNetlistShared;
+
+        double step, inicialFrequency, finalFrequency;
 
 };
 

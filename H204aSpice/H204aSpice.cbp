@@ -38,6 +38,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="header/BJT.h" />
 		<Unit filename="header/Capacitor.h" />
 		<Unit filename="header/Component.h" />
 		<Unit filename="header/CurrentSrc.h" />
@@ -48,6 +49,7 @@
 		<Unit filename="header/VoltageSrc.h" />
 		<Unit filename="header/netListStructure.h" />
 		<Unit filename="header/supportFunctions.h" />
+		<Unit filename="src/BJT.cpp" />
 		<Unit filename="src/Capacitor.cpp" />
 		<Unit filename="src/Component.cpp" />
 		<Unit filename="src/CurrentSrc.cpp" />
