@@ -420,7 +420,7 @@ void netlistStructure::printOperatingPoint() {
 
 		BJT *tempBJT;
 
-		double ic_temp, Ib;
+		double Ic, Ib;
 
 		for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 
@@ -428,12 +428,12 @@ void netlistStructure::printOperatingPoint() {
 
 				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
 
-				ic_temp = tempBJT->alfa * tempBJT->currentBE() - tempBJT->currentBC();
-				Ib = ic_temp * (tempBJT->alfa - 1) / (tempBJT->alfa);	 // ic = beta * ib entao ib = ic / beta, sendo beta = alfa / (alfa - 1)
+				Ic = tempBJT->alfa * tempBJT->currentBE() - tempBJT->currentBC();
+				Ib = Ic * (tempBJT->alfa - 1) / (tempBJT->alfa);	 // ic = beta * ib entao ib = ic / beta, sendo beta = alfa / (alfa - 1)
 
 				cout << "> TRANSISTOR NAME: " << tempBJT->name;
 				cout << "> Vce = " << tempBJT->Vce << endl;
-				cout << "> Ic = " << tempBJT->Ic << endl;
+				cout << "> Ic = " << Ic << endl;
 				cout << "> Ib = " << Ib << endl;
 			}
 		}
