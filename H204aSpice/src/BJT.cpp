@@ -16,6 +16,13 @@ unsigned int blankPosition;
 BJT nome_BJT = new BJT(string_doarquivo)
 
 
+void BJT::setVoltages (void){
+      Vbc = solutionMatrix.nodeB - solutionMatrix.nodeC;
+      Vbe = solutionMatrix.nodeB - solutionMatrix.nodeE;
+      Vce = solutionMatrix.nodeC - solutionMatrix.nodeE;
+}
+
+
 //*************************************************************
 //Cálculo de parâmetros do modelo linearizado necessários para montar a estampa
 //*************************************************************
@@ -73,22 +80,24 @@ double BJT::iDE(void){
 }
 
 double BJT::fonteG1(void){
-	return (alfa*(Isbe/Vtbe)*exp((Vbe/Vtbe)*(Vt/VA));
+	return alfa*(Isbe/Vtbe)*exp(Vbe/Vtbe)*(Vt/VA);
+
+}
 
 
 double BJT::fonteG2(void){
-	return -1*((Isbc/Vtbc)*exp(Vbc/Vtbe)*(Vt/VA));
+	return -1*(Isbc/Vtbc)*exp(Vbc/Vtbe)*(Vt/VA);
 }
 
 double BJT::fonteG3(void){
-	return  ((alfa*iDE() - iDC())/(VA));
+	return  (alfa*iDE() - iDC())/VA;
 }
 
 double BJT::fonteI0(void){
     
 //    Vce = nodalAnalysisMatrix[!!!!!!!!!COLETOR!!!!!!!!!!!!] - nodalAnalysisMatrix[!!!!!!!!!!!!EMISSOR!!!!!!!!!]; //vCE
 
-   return (fonteG3()*Vce - fonteG1()*(Vbe*) - fonteG2()*Vbc - fonteG3()*Vce);
+   return fonteG3()*Vce - fonteG1()*Vbe - fonteG2()*Vbc - fonteG3()*Vce;
 }
 
 
@@ -141,7 +150,7 @@ void BJT::SetTemplate(void) {
             nodalSystem[nodeE][extraNode]-=g;
 
 
-#ifdef ativarEarly
+      #ifdef ativarEarly
             //Elementos entre da Coletor e Emissor
             //implementaçao de early
             //Fonte de corrente
@@ -182,51 +191,51 @@ void BJT::SetTemplate(void) {
 
 
 
-if (Vbc == Vt/2) {
-        Cr = C0bc/(1-VbcVt)^n;
+            if (Vbc == Vt/2) {
+                    Cr = C0bc/(1-VbcVt)^n;
 
-      capacitiveAdmittance = Complex(0.0, frequency*Cr);
+                  capacitiveAdmittance = Complex(0.0, frequency*Cr);
 
-      nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-      nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-}
-
-
-if (Vbc > 0) {
-      Cd = (C1bc*expVbcVT)-1;
-      capacitiveAdmittance = Complex(0.0, frequency*Cd);
-
-      nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-      nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-}
-
-if ( Vbe == Vt/2) {
-        Cr = C0bc/(1-(Vbe/Vt))^n;
-
-      capacitiveAdmittance = Complex(0.0, frequency*Cr);
-
-      nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-      nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-}
+                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
+                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
+            }
 
 
-if (Vbe* > 0) {
-      Cd = (C1bc*exp(Vbe/VT)-1);
-      capacitiveAdmittance = Complex(0.0, frequency*Cd);
+            if (Vbc > 0) {
+                  Cd = (C1bc*expVbcVT)-1;
+                  capacitiveAdmittance = Complex(0.0, frequency*Cd);
 
-      nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-      nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-      nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-}
+                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
+                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
+            }
 
-}
+            if ( Vbe == Vt/2) {
+                    Cr = C0bc/(1-(Vbe/Vt))^n;
+
+                  capacitiveAdmittance = Complex(0.0, frequency*Cr);
+
+                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
+                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
+            }
+
+
+            if (Vbe* > 0) {
+                  Cd = (C1bc*exp(Vbe/VT)-1);
+                  capacitiveAdmittance = Complex(0.0, frequency*Cd);
+
+                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
+                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
+                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
+            }
+
+
 
 BJT::~BJT()
 {
