@@ -85,6 +85,9 @@ double BJT::fonteG3(void){
 }
 
 double BJT::fonteI0(void){
+    
+//    Vce = nodalAnalysisMatrix[!!!!!!!!!COLETOR!!!!!!!!!!!!] - nodalAnalysisMatrix[!!!!!!!!!!!!EMISSOR!!!!!!!!!]; //vCE
+
    return (fonteG3()*Vce - fonteG1()*(Vbe*step) - fonteG2()*(Vbc*step) - fonteG3()*Vce);
 }
 
