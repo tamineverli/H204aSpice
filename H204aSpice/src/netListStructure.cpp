@@ -445,6 +445,92 @@ void netlistStructure::printOperatingPoint() {
 
 //Perform frequency analysis
 void netlistStructure::freqAnalysis() {
+	
+	const double defautStep = 1;
+	string outputFileName;
+	ofstream outputFile;
+	double frequency, step, stepScaleFactor;
+	unsigned int numRows = 0;
+
+	// Writes the results of the hole analysis to the output file
+	outputFileName = netlistFilePath.substr(0, netlistFilePath.find("."));
+	outputFileName += "-frequency.tab";
+
+	outputFile.open(outputFileName);
+
+	if (!outputFile) {
+		cout << "Erro: nao foi possivel abrir o arquivo de saida." << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	// Writes the first line, composed by the voltage and current identifiers
+	outputFile << "f";
+	for (unsigned int index = 0; index < numNodes; ++index) {
+		outputFile << " " << (index + 1) << "m " << (index + 1) << "f";
+	}
+	for (unsigned int index = 0; index < extraNodeIdentifier.size(); ++index) {
+		outputFile << " " << extraNodeIdentifier[index] << "m " << extraNodeIdentifier[index] << "f";
+	}
+	outputFile << endl;
+
+	if (stepType == "LIN") {
+		step = ceil((finalFrequency - inicialFrequency)/(frequencyStep - 1));
+		stepScaleFactor = step/inicialFrequency + 1;
+	}
+	else {
+
+		step = defautStep;
+
+		if (stepType == "DEC") {
+			stepScaleFactor = pow(10.0, (1/(frequencyStep - 1)));
+		}
+		else if (stepType == "OCT") {
+			stepScaleFactor = pow(2.0, (1/(frequencyStep - 1)));
+		}
+	}
+
+	for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
+
+		solveNodalSystem(2*PI*frequency);
+		if (solveNodalSystem()) {
+			cout << " Nao foi possivel calcular a analise na frequencia " << frequency << ". Programa abortado." << endl;
+			cout << "Pressione uma tecla para fechar..." << endl;
+			
+			#ifndef NOT_WINDOWS
+			getch();
+			system("cls");
+			#endif
+			
+			exit(EXIT_FAILURE);
+		}
+
+		outputFile << scientific << setprecision(4) << abs(solutionMatrix.at(0));
+
+		// Writes the contents of the file, spliting the complex values into magnitude and phase (starts in one to jump the ground node voltage)
+		for (unsigned int columnIndex = 1; columnIndex < solutionMatrix.size(); ++columnIndex) {
+			outputFile << " " << scientific << setprecision(5) << abs(solutionMatrix.at(columnIndex))
+					   << " " << fixed << setprecision(3) << arg(solutionMatrix.at(columnIndex))*(180/PI);
+		}
+		outputFile << endl;
+
+		if (stepType == "LIN")
+			stepScaleFactor = step/frequency + 1;
+		else
+			step = frequency*(stepScaleFactor - 1);
+
+		++numRows;
+	}
+
+	outputFile.close();
+	cout << "Analise em frequencia realizada com sucesso. Tabela com " << numRows << " pontos registrada no arquivo '" << outputFileName << "'." << endl << endl;
+}
+}
+
+//Frequency analysis output
+void netlistStructure::printFreqAnalysis() {
+
+	return();
+}
 
 	return;
 }

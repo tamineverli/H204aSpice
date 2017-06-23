@@ -87,6 +87,11 @@ double BJT::fonteI0(){
    return fonteG3()*Vce - fonteG1()*Vbe - fonteG2()*Vbc - fonteG3()*Vce;
 }
 
+// double BJT:: currentIc() {
+		
+// 	return - Vbc / GC
+// }
+
 
 
 void BJT::SetTemplate(ComplexVector &nodalSystem) {
