@@ -42,8 +42,8 @@ class netlistStructure
 		// numRows = numNodes; numColumns = numNodes + 1 (the plus one is for the coupled solution vector as the last column)
 		vector < vector<Complex> > nodalSystem;
 
-		// Solution matrix, used in the end to write the output file
-		vector<Complex> solutionMatrix;
+		// Solution vector, used in the end to write the output file
+		vector<Complex> nodalSolutionVector;
 
 		string netlistFilePath, stepType;
 		unsigned int numNodes, numTotalNodes, solutionIndex;

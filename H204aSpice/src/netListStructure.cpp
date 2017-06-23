@@ -17,10 +17,16 @@
 #include <vector>
 #include <sstream>
 
+#define ZERO_ERROR_THRESHOLD = 1e-9;
+#define NEWTON_RAP_MAX_ITERATIONS = 200;
+#define NEWTON_RAP_MAX_RAND = 100;
+#define NEWTON_RAP_STEP = 0.05;
+#define MAX_ERROR = 0.05;
+
+
 using namespace std;
 
-netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath(validFilePath)
-{
+netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath(validFilePath) {
 
 	//	1. DECLARE LOCAL VARIABLES
 
@@ -113,6 +119,12 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 						tempCouple = NULL;
 						break;
 
+				//BJT
+					case 'Q':	//BJT
+						newComponent = new BJT(fileLine);
+						hasBJT = true;
+						break;
+
 				//Command Line
 					case '.':
 						setCommandLineParameters(fileLine);
@@ -180,12 +192,15 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		buildNodalSystem();
 
 		//Allocate memory for the output matrix - first line stores frequency values
-		solutionMatrix = vector< Complex > (numTotalNodes + 1, 0.0);
+		nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.0);
 
 		//Element netlist is created in this object
 		//isElementNetlistShared = false;
 
 	//	5. USE NEWTON RAPHSON TO SET BJT VOLTAGES AND CURRENTS
+		newtonRaphson();
+
+		printOperatingPoint();
 
 	//	6. UPDATE NODAL SYSTEM
 
@@ -259,12 +274,13 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 	for (unsigned int i = 0; index < componentNetlist.size(); ++i) {
 		componentNetlist.at(index)->setTemplate(nodalSystem);
 	}
-	return();
+	return;
 }
 
 //Solve the nodal system matrix
 int netlistStructure::solveNodalSystem() {
-	const double ZERO_ERROR_THRESHOLD = 1e-9;
+
+	//const double ZERO_ERROR_THRESHOLD = 1e-9;
 
 	unsigned int i, j, l, a;
 	Complex temp, pivot;
@@ -275,46 +291,46 @@ int netlistStructure::solveNodalSystem() {
 		a = i;
 
 		for (l = i; l < numTotalNodes + 1; ++l) {
-			if (abs(nodalAnalysisMatrix[l][i]) > abs(temp)) {
+			if (abs(nodalSystem[l][i]) > abs(temp)) {
 				a = l;
-				temp = nodalAnalysisMatrix[l][i];
+				temp = nodalSystem[l][i];
 			}
 		}
 
 		if (i != a) {
 			for (l = 1; l < numTotalNodes + 2; ++l) {
-				pivot = nodalAnalysisMatrix[i][l];
-				nodalAnalysisMatrix[i][l] = nodalAnalysisMatrix[a][l];
-				nodalAnalysisMatrix[a][l] = pivot;
+				pivot = nodalSystem[i][l];
+				nodalSystem[i][l] = nodalSystem[a][l];
+				nodalSystem[a][l] = pivot;
 			}
 		}
 
 		if (abs(temp) < ZERO_ERROR_THRESHOLD) {
 			cout << "Erro: sistema singular.";
-			return 1;
+			return(1);
 		}
 		
 		// To diagonalize the matrix, the condition below must be "j > 0". However, for this programm, it is enought to solve the system, done with the condition "j > i"
 		for (j = numTotalNodes + 1; j > 0; --j) {
 			
-			nodalAnalysisMatrix[i][j] /= temp;
-			pivot = nodalAnalysisMatrix[i][j];
+			nodalSystem[i][j] /= temp;
+			pivot = nodalSystem[i][j];
 
 			if (abs(pivot) != 0.0) {
 				for (l = 1; l < numTotalNodes + 1; ++l) {
 					if (l != i)
-						nodalAnalysisMatrix[l][j] -= nodalAnalysisMatrix[l][i] * pivot;
+						nodalSystem[l][j] -= nodalSystem[l][i] * pivot;
 				}
 			}
 		}
 	}
 
-	// The first element of each line of the solutionMatrix is the frequency
-	solutionMatrix.at(0) = Element::getFrequency()/(2*PI);
+	// The first element of each line of the nodalSolutionVector is the frequency
+	nodalSolutionVector.at(0) = Element::getFrequency()/(2*PI);
 
-	// Writes the solution to the solutionMatrix to be writen to the output file later
-	for (i = 1; i < solutionMatrix.capacity(); ++i) {
-		solutionMatrix.at(i) = nodalAnalysisMatrix[i][nodalAnalysisMatrix.at(i).capacity() - 1];
+	// Writes the solution to the nodalSolutionVector to be writen to the output file later
+	for (i = 1; i < nodalSolutionVector.capacity(); ++i) {
+		nodalSolutionVector.at(i) = nodalSystem[i][nodalSystem.at(i).capacity() - 1];
 	}
 	return(0);
 }
@@ -322,7 +338,54 @@ int netlistStructure::solveNodalSystem() {
 //Compute BJT tensions using Newton Raphson method
 void netlistStructure::newtonRaphson() {
 
-	return();
+//nv tem que virar nosso numero total de variáveis 
+//tem que declarar solução atual e ultima solução, e todo o resto
+//mudar as funções de abrir arquivo
+
+	srand(time(0));
+
+	//Initialize solution vector with zeros
+	nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.0);
+
+    bool converged = false;
+	unsigned int countIterations = 0;
+	unsigned int countRandomizations = 0;
+
+    // loop para definir o maximo de tentativas de newtempoAtivo-raphson
+    while (!converged) {
+
+        if ( (countIterations == NEWTON_RAP_MAX_ITERATIONS) && (countRandomizations < NEWTON_RAP_MAX_RAND)) {
+            
+            for (unsigned int index = 1; index <= numTotalNodes; ++cont) {
+                nodalSolutionVector[index]=((rand()%100)/100.0);
+	            ++countRandomizations;
+	            countIterations=0;
+            }
+        }
+
+        if(countRandomizations == NEWTON_RAP_MAX_RAND) {
+            printf("\nOs calculos nao convergiram.\n");
+            exit(1);
+        }
+
+        // monta a matriz de condutancia e resolve o sistema para o passo interno atual
+        buildNodalSystem(0.0); //montarEstampas();
+        solveNodalSystem();//resolverSistema();
+
+        converged = true;
+
+		for (unsigned int index = 1; index <= numTotalNodes; ++cont) {
+            if (fabs(nodalSolutionVector[index] - nodalSystem[index][numTotalNodes+1]) > MAX_ERROR)) {
+                converged = false;
+        	    ++countIterations;
+			}
+        }
+
+        // Copia a solucao atual para o vetor solucao
+        for (cont=1; cont<=nv; ++con) {
+            nodalSolutionVector[index] = nodalSystem[index][numTotalNodes+1];
+        }
+    }
 }
 
 //Find operating point for all transistors
@@ -334,6 +397,28 @@ void netlistStructure::findOperatingPoint() {
 //Operating point output
 void netlistStructure::printOperatingPoint() {
 
+	if (hasBJT) {
+
+		BJT *tempBJT;	
+
+		double ic_temp;
+
+		for (unsigned int index = 0; index < elementNetlist.size(); ++index) {
+
+			if (componentNetlist.at(index)->type == 'Q') {
+
+				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
+				
+				ic_temp = tempBJT->alfa * currentBE() - currentBC();
+				tempBJT->Ib = ic_temp * (tempBJT->alfa - 1) / (tempBJT->alfa);	 // ic = beta * ib entao ib = ic / beta, sendo beta = alfa / (alfa - 1)
+				 
+				cout << "> TRANSISTOR NAME: " << tempBJT->name;
+				cout << "> Vce = " << tempBJT->Vce << end1;
+				cout << "> Ic = " << tempBJT->Ic << end1;
+				cout << "> Ib = " << tempBJT->Ib << end1; 
+			}
+		}
+	} 
 	return();
 }
 
