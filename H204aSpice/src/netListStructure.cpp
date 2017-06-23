@@ -162,7 +162,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
 		cout << "_____________________________________________________\n" << endl;
 
-	//
+	//	4. SET OTHER CIRCUIT PARAMETERS
 			//Update total number of nodes, considering extra nodes
 			numTotalNodes = numNodes + extraNodeVector.size();
 
@@ -171,7 +171,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 				setCommandLineParameters("defautParameters");
 			}
 
-	//	4. SET NODAL SYSTEM
+	//	5 . SET NODAL SYSTEM
 
 		//Initialize the nodal system with zeros - line and column [0,0] represent the ground
 		
@@ -251,21 +251,72 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 //Build nodal system for a given frequency
 void netlistStructure::buildNodalSystem(const double frequency) {
 
-	Element::setFrequency(frequency);
+	Component::setFrequency(frequency);
 
-	// Fills the nodalAnalysisMatrix with zeros. The plus one and plus two in the size is to accept the line and column zero as the ground node
+	//Initialize nodal system matrix with zeros - line and column [0,0] represent the ground node
 	nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0)); 
 
-	for (unsigned int index = 0; index < elementNetlist.size(); ++index) {
-		elementNetlist.at(index)->setTemplate(nodalAnalysisMatrix);
+	for (unsigned int i = 0; index < componentNetlist.size(); ++i) {
+		componentNetlist.at(index)->setTemplate(nodalSystem);
 	}
 	return();
 }
 
 //Solve the nodal system matrix
-void netlistStructure::solveNodalSystem() {
+int netlistStructure::solveNodalSystem() {
+	const double ZERO_ERROR_THRESHOLD = 1e-9;
 
-	return();
+	unsigned int i, j, l, a;
+	Complex temp, pivot;
+
+	for (i = 1; i <= numTotalNodes; ++i) {
+
+		temp = 0.0;
+		a = i;
+
+		for (l = i; l < numTotalNodes + 1; ++l) {
+			if (abs(nodalAnalysisMatrix[l][i]) > abs(temp)) {
+				a = l;
+				temp = nodalAnalysisMatrix[l][i];
+			}
+		}
+
+		if (i != a) {
+			for (l = 1; l < numTotalNodes + 2; ++l) {
+				pivot = nodalAnalysisMatrix[i][l];
+				nodalAnalysisMatrix[i][l] = nodalAnalysisMatrix[a][l];
+				nodalAnalysisMatrix[a][l] = pivot;
+			}
+		}
+
+		if (abs(temp) < ZERO_ERROR_THRESHOLD) {
+			cout << "Erro: sistema singular.";
+			return 1;
+		}
+		
+		// To diagonalize the matrix, the condition below must be "j > 0". However, for this programm, it is enought to solve the system, done with the condition "j > i"
+		for (j = numTotalNodes + 1; j > 0; --j) {
+			
+			nodalAnalysisMatrix[i][j] /= temp;
+			pivot = nodalAnalysisMatrix[i][j];
+
+			if (abs(pivot) != 0.0) {
+				for (l = 1; l < numTotalNodes + 1; ++l) {
+					if (l != i)
+						nodalAnalysisMatrix[l][j] -= nodalAnalysisMatrix[l][i] * pivot;
+				}
+			}
+		}
+	}
+
+	// The first element of each line of the solutionMatrix is the frequency
+	solutionMatrix.at(0) = Element::getFrequency()/(2*PI);
+
+	// Writes the solution to the solutionMatrix to be writen to the output file later
+	for (i = 1; i < solutionMatrix.capacity(); ++i) {
+		solutionMatrix.at(i) = nodalAnalysisMatrix[i][nodalAnalysisMatrix.at(i).capacity() - 1];
+	}
+	return(0);
 }
 
 //Compute BJT tensions using Newton Raphson method
