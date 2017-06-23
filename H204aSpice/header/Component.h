@@ -18,7 +18,7 @@ class Component
 
 		static void setFrequency(const double newfrequency);
 		static double getFrequency();
-		virtual void setTemplate(ComplexVector &nodalSystem) = 0;
+		virtual void setTemplate(ComplexVector &nodalSystem);
 		virtual void print();
 		virtual ~Component();
 
@@ -27,7 +27,7 @@ class Component
 		char type;				//Component type
 
 		unsigned int extraNode;		//For components that need an extra node
-		
+
 		static double frequency;	//Frequency - static (applies for all circuit components)
 };
 
