@@ -14,39 +14,39 @@
 	<iostream>
 	"supportFunctions.h"
 
-1498016755 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\component.cpp
+1498332388 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\component.cpp
 	"../header/Component.h"
 	<math.h>
 	<iostream>
 	<iomanip>
 
-1498170904 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\component.h
+1498333879 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\component.h
 	<string>
 	<complex>
 	<vector>
 
-1498196128 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
+1498333991 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
 	<iomanip>
 	<string>
 	<vector>
-	"supportFunctions.h"
-	"netListStructure.h"
+	"../header/supportFunctions.h"
+	"../header/netListStructure.h"
 
 1497990388 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\supportfunctions.h
 	<iostream>
 	<stdlib.h>
 	<string>
 
-1498196815 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\netliststructure.h
+1498332539 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\netliststructure.h
 	<string>
 	<complex>
 	<vector>
-	<Component.h>
+	"Component.h"
 
-1497988941 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
+1498340390 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
 	"../header/Capacitor.h"
@@ -54,6 +54,8 @@
 	"../header/VoltageSrc.h"
 	"../header/CurrentSrc.h"
 	"../header/AmpOp.h"
+	"../header/ControlledSourceImplementations.h"
+	"../header/CoupledInductors.h"
 	<stdlib.h>
 	<fstream>
 	<iostream>
@@ -82,7 +84,7 @@
 	"../header/SimpleComponent.h"
 	<iostream>
 
-1497990358 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\supportfunctions.cpp
+1498343626 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\supportfunctions.cpp
 	"../header/supportFunctions.h"
 
 1498016689 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\capacitor.cpp
@@ -131,11 +133,11 @@
 	<complex>
 	<vector>
 
-1498016603 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\ampop.cpp
-	"AmpOp.h"
+1498335676 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\src\ampop.cpp
+	"../header/AmpOp.h"
 	<iostream>
 
-1498016540 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\ampop.h
+1498336368 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\ampop.h
 	<Component.h>
 	<string>
 	<complex>
@@ -177,6 +179,183 @@
 
 1498197212 d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\bjt.h
 	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1498016697 source:d:\google drive\academic records\disciplinas\circuitos elétricos ii\h204aspice\h204aspice\header\capacitor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1498356745 source:c:\h204aspice\src\ampop.cpp
+	"../header/AmpOp.h"
+	<iostream>
+
+1498354134 c:\h204aspice\header\ampop.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1498368201 c:\h204aspice\header\component.h
+	<string>
+	<complex>
+	<vector>
+
+1498016689 source:c:\h204aspice\src\capacitor.cpp
+	"../header/Capacitor.h"
+
+1498016697 c:\h204aspice\header\capacitor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1498354139 c:\h204aspice\header\simplecomponent.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1498332388 source:c:\h204aspice\src\component.cpp
+	"../header/Component.h"
+	<math.h>
+	<iostream>
+	<iomanip>
+
+1498005710 source:c:\h204aspice\src\controlledsource.cpp
+	"ControlledSource.h"
+	<iostream>
+
+1498016846 c:\h204aspice\header\controlledsource.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1498016579 source:c:\h204aspice\src\controlledsourceimplementations.cpp
+	"../header/ControlledSourceImplementations.h"
+
+1498016780 c:\h204aspice\header\controlledsourceimplementations.h
+	"ControlledSource.h"
+	<iostream>
+	<stdlib.h>
+	<string>
+
+1498361248 source:c:\h204aspice\src\coupledinductors.cpp
+	"CoupledInductors.h"
+	<iostream>
+
+1498354382 c:\h204aspice\header\coupledinductors.h
+	<Component.h>
+	<Inductor.h>
+	<string>
+	<complex>
+	<vector>
+
+1498017016 c:\h204aspice\header\inductor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1498016943 source:c:\h204aspice\src\currentsrc.cpp
+	"CurrentSrc.h"
+
+1498016952 c:\h204aspice\header\currentsrc.h
+	<IndependentSource.h>
+	<string>
+	<complex>
+	<vector>
+
+1498016925 c:\h204aspice\header\independentsource.h
+	<Component.h>
+	<string>
+	<complex>
+	<vector>
+
+1497936361 source:c:\h204aspice\src\independentsource.cpp
+	"IndependentSource.h"
+	<iostream>
+
+1498017039 source:c:\h204aspice\src\inductor.cpp
+	"../header/Inductor.h"
+
+1498429986 source:c:\h204aspice\src\main.cpp
+	<iostream>
+	<stdlib.h>
+	<fstream>
+	<iomanip>
+	<string>
+	<vector>
+	"../header/supportFunctions.h"
+	"../header/netListStructure.h"
+
+1497990388 c:\h204aspice\header\supportfunctions.h
+	<iostream>
+	<stdlib.h>
+	<string>
+
+1498429718 c:\h204aspice\header\netliststructure.h
+	<string>
+	<complex>
+	<vector>
+	"Component.h"
+
+1498363174 source:c:\h204aspice\src\netliststructure.cpp
+	"../header/netListStructure.h"
+	"../header/Resistor.h"
+	"../header/Capacitor.h"
+	"../header/Inductor.h"
+	"../header/VoltageSrc.h"
+	"../header/CurrentSrc.h"
+	"../header/AmpOp.h"
+	"../header/ControlledSourceImplementations.h"
+	"../header/CoupledInductors.h"
+	"../header/BJT.h"
+	<stdlib.h>
+	<fstream>
+	<iostream>
+	<iomanip>
+	<math.h>
+	<string>
+	<vector>
+	<sstream>
+
+1498017044 c:\h204aspice\header\resistor.h
+	<SimpleComponent.h>
+	<string>
+	<complex>
+	<vector>
+
+1498017097 c:\h204aspice\header\voltagesrc.h
+	<IndependentSource.h>
+	<string>
+	<complex>
+	<vector>
+
+1498017051 source:c:\h204aspice\src\resistor.cpp
+	"../header/Resistor.h"
+
+1498017075 source:c:\h204aspice\src\simplecomponent.cpp
+	"../header/SimpleComponent.h"
+	<iostream>
+
+1498344749 source:c:\h204aspice\src\supportfunctions.cpp
+	"../header/supportFunctions.h"
+
+1498017105 source:c:\h204aspice\src\voltagesrc.cpp
+	"VoltageSrc.h"
+
+1498422041 source:c:\h204aspice\src\bjt.cpp
+	"BJT.h"
+	<iostream>
+
+1498422139 c:\h204aspice\header\bjt.h
+	<Component.h>
+	<cmath>
 	<string>
 	<complex>
 	<vector>

@@ -3,36 +3,51 @@
 
 #include <Component.h>
 
+#include <cmath>
 #include <string>
 #include <complex>
 #include <vector>
 
+using namespace std;
 
 class BJT : public Component
 {
     public:
         BJT(string netlistLine);
+        virtual void setTemplate(ComplexVector &nodalSystem);
+
+        //Set and Get methods for Vbc, Vbe and Vce
+        //void setTerminalVoltages(ComplexVector &nodalSolutionVector);
+        double getVbc();
+        double getVbe();
+        double getVce();
+
+        //Calculate parameters of the linear model needed to set the templates
+        double setConductanceBC();
+        double setCurrentBC();
+        double setConductanceBE();
+        double setCurrentBE();
+        double sourceG1();
+        double sourceG2();
+        double sourceG3();
+        double sourceI0();
+
+        //Early Effect
+        double iDE();
+        double iDC();
+
+
         virtual ~BJT();
-        void SetTemplate(ComplexVector &nodalSystem);
-        virtual double conductanceBC();
-        virtual double currentBC();
-        virtual double conductanceBE();
-        virtual double currentBE();
-        virtual double iDE();
-        virtual double iDC();
-        virtual double fonteG1();
-        virtual double fonteG2();
-        virtual double fonteG3();
-        virtual double fonteI0();
 
-        unsigned int nodeB, nodeC, nodeE;
-        double alfa, alfaR, Isbe, VTbe, Isbc, VTbc, VA, C0be, C1be, C0bc, C1bc;
-        double Vt;
-        double n;
+        string bjt_type;
+        unsigned int nodeCollector, nodeBase, nodeEmitter;
+        double alfa, alfaR;
+        double  IsBe, VtBe, IsBc, VtBc, VA;
+        double  C0be, C1be, C0bc, C1bc;
 
-        char *BJT_type;
+        double bjt_Vt, bjt_n, bjt_g;
 
-        double GC, GE, IC, IE, g;
+        double GC, GE, IC, IE;
         double Vbc, Vbe, Vce;
 
 };

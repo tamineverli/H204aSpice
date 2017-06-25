@@ -35,9 +35,9 @@ Por: Marina Torres (marinat94@poli.ufrj.br)
 #include <string>
 #include <vector>
 
+#include "../header/supportFunctions.h"
+#include "../header/netListStructure.h"
 
-#include "supportFunctions.h"
-#include "netListStructure.h"
 
 using namespace std;
 
@@ -74,22 +74,43 @@ int main(int argc, char** argv)
 	// 2.5 Call netlist builder
 		programHeader();
 		cout << "\nLendo NETLIST...\n\n" << endl;
-		netlistStructure netlistStructure(netlistPath); //This is where the fun begins
 
-		cout << "Pronto para iniciar a analise!" << endl;
-		cout << "Pressione qualquer tecla para continuar..." << endl;
+		netlistStructure myCircuit(netlistPath); //This is where the fun begins
+
+		cout << " Pronto para iniciar a analise!" << endl;
+		cout << " Pressione qualquer tecla para continuar..." << endl;
 		cin.get();
 
 //	3. OPERATING POINT
+		programHeader();
+		cout << "\nAnalisando o circuito...\n\n" << endl;
 
-		//myCircuit.findOperatingPoint();
-		//myCircuit.printOperatingPoint();
+		if(myCircuit.hasBJT) {
+
+			if(myCircuit.newtonRaphson()) {
+
+				cout << "___________________________________________\n" << endl;
+				cout << "Ponto de operacao dos transistores:\n" << endl;
+				myCircuit.findOperatingPoint();
+				
+				cout << "\n___________________________________________\n" << endl;
+				cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
+				cin.get();
+
+			} else {
+				cout << "O sistema nodal nao convergiu: ponto de operacao nao encontrado.\n" << endl;
+				cin.get();
+				return(0);
+			}
+		}
 
 //	4. FREQUENCY ANALYSIS
-
+		
+		//programHeader();
+		//cout << "\nAnalise em frequencia...\n\n" << endl;
 		//myCircuit.freqAnalysis();
 		//myCircuit.printFreqAnalysis();
 
-  return 0;
+  	return 0;
 
 }

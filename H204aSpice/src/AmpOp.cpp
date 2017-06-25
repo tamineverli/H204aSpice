@@ -1,8 +1,10 @@
-#include "AmpOp.h"
+#include "../header/AmpOp.h"
 
 #include <iostream>
 
-AmpOp::AmpOp(const string netlistLine) : Component(netlistLine) {
+using namespace std;
+
+AmpOp::AmpOp(string netlistLine) : Component(netlistLine) {
 
 	unsigned int blankPosition;
 

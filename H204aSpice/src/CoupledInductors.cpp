@@ -6,16 +6,11 @@ CoupledInductors::CoupledInductors(string netlistLine) : Component(netlistLine) 
 
 	unsigned int blankPosition;
 
-	//The attribute netlistLine will be already trimmed to contain only the unitialized values
 	blankPosition = netlistLine.find(" ");
-	L1Name = netlistLine.substr(0, blankPosition);
+	istringstream in(netlistLine.substr(blankPosition + 1));
 
-	netlistLine = netlistLine.substr(blankPosition + 1);
-	blankPosition = netlistLine.find(" ");
-	L2Name = netlistLine.substr(0, blankPosition);
-
-	netlistLine = netlistLine.substr(blankPosition + 1);
-	k = stod(netlistLine);
+	//cout << "parametros lidos " << netlistLine << endl;  //debug
+	in >> L1Name >> L2Name >> k;
 }
 
 //Gets the value of L1 and L2 from the componentNetlist vector
@@ -54,10 +49,7 @@ void CoupledInductors::print() {
 
 	//Component::print();
 
-	cout << "Acoplamento de Indutores:" << endl;
-	cout << "L1: " << L1Name << endl;
-	cout << "L2: " << L2Name << endl;
-	cout << "Indutancia mutua: " << mutualInductance << endl << endl;
+	cout << " Acoplamento entre Indutores: " << L1Name << " e " << L2Name << endl << endl;
 }
 
 CoupledInductors::~CoupledInductors() {

@@ -5,7 +5,7 @@
 #include <complex>
 #include <vector>
 
-#include <Component.h>
+#include "Component.h"
 
 class netlistStructure
 {
@@ -18,18 +18,13 @@ class netlistStructure
         //Solve the nodal system matrix
         int solveNodalSystem();
         //Compute BJT tensions using Newton Raphson method
-        void newtonRaphson();
+        int newtonRaphson();
         //Find operating point for all transistors
 		void findOperatingPoint();
-		//Operating point output
-		void printOperatingPoint();
 		//Perform frequency analysis
-		void freqAnalysis();
+		//void freqAnalysis();
 		//Frequency analysis output
-		void printFreqAnalysis();
-
-
-
+		//void printFreqAnalysis();
 
         virtual ~netlistStructure();
 

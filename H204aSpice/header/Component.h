@@ -13,12 +13,11 @@ typedef vector< vector<Complex> > ComplexVector;
 class Component
 {
 	public:
-
 		Component(string netlistLine);
 
 		static void setFrequency(const double newfrequency);
 		static double getFrequency();
-		virtual void setTemplate(ComplexVector &nodalSystem);
+		virtual void setTemplate(ComplexVector &nodalSystem) = 0;
 		virtual void print();
 		virtual ~Component();
 

@@ -1,234 +1,283 @@
 #include "BJT.h"
 
-#include <cstring>
+#include <iostream>
 
 using namespace std;
 
 BJT::BJT(string netlistLine) : Component(netlistLine) {
 
-unsigned int blankPosition;
+	unsigned int blankPosition;
 
     blankPosition = netlistLine.find(" ");
 	istringstream in(netlistLine.substr(blankPosition + 1));
 
-	//cout << "paramentros lidos " << netlistLine << endl;  //debug
-    in >> nodeC >> nodeB >> nodeE >> type >> alfa >> alfaR >> Isbe >> VTbe >> Isbc >> VTbc >> VA >> C0be >> C1be >> C0bc >> C1bc;
+	//cout << "parametros lidos " << netlistLine << endl;  //debug
+	in >> nodeCollector >> nodeBase >> nodeEmitter >> bjt_type >> alfa >> alfaR >> IsBe >> VtBe >> IsBc >> VtBc >> VA >> C0be >> C1be >> C0bc >> C1bc;
 
-    Vt = 0.6;
-    n = 0.5;
+	bjt_Vt = 0.6;
+	bjt_n = 0.5;
 
-    Vbc = 0.1;
-    Vbe = 0.1;
-    Vce = 0.1;
+	//CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK
+	Vbc = 0.1;
+	Vbe = 0.1;
+	Vce = 0.1;
 
-    //Se PNP, inverte v
-    if (!strcmp(BJT_type,"PNP")) {
-        Vt = -Vt;
+	//If PNP, invert bjt_Vt
+	if (bjt_type.compare("PNP") == 0) {
+		bjt_Vt = -bjt_Vt;
     }
 }
 
-//Calculo de parâmetros do modelo linearizado necessários para montar a estampa
-double BJT::conductanceBC() {
-	return (Isbc/Vt)*exp(Vbc/VTbc);
-}
 
-double BJT::currentBC (){
-	return  Isbc*(exp(Vbc/VTbc)-1) - (conductanceBC() * Vbc);
-}
-
-double BJT::conductanceBE() {
-	return (Isbe/Vt)*exp(Vbe/VTbe);
-}
-
-double BJT::currentBE() {
-	return  Isbe*(exp(Vbc/VTbe)-1) - (conductanceBE() *Vbe);
-}
-
-//*************************************************************
-// Adicionando o efeito Early
-//*************************************************************
-
-//Corrente que passa no diodo entre base e emissor
-double BJT::iDE(){
-	return ((Isbe)*exp(Vbe/VTbe) - 1);
-}
-
-//Corrente que passa no diodo entre base e coletor
- double BJT::iDC(){
-/*  !!!!!   TENHO QUE COLOCAR ISSO NA PRIMEIRA ITERAÇÃO LÁ FORA	   !!!!!!
-	Vbc = Vt;
-
-	if (type == "PNP"){
-		Vt=-Vt;
+//1. Set and Get methods for Vbc, Vbe and Vce
+/*
+	//Set new values for ddp between BJT terminals
+	void BJT::setTerminalVoltages(ComplexVector &nodalSolutionVector) {
+		Vbc = abs(nodalSolutionVector[nodeBase]) - abs(nodalSolutionVector[nodeCollector]);
+		Vbe = abs(nodalSolutionVector[nodeBase]) - abs(nodalSolutionVector[nodeEmitter]);
+		Vce = abs(nodalSolutionVector[nodeCollector]) - abs(nodalSolutionVector[nodeEmitter]);
 	}
 */
+    double BJT::getVbc() {
+		return(Vbc);
+    }
 
-	return ((Isbc)*exp(Vbc/VTbc) - 1);
-}
+    double BJT::getVbe() {
+		return(Vbc);
+    }
 
-double BJT::fonteG1(){
-	return alfa*(Isbe/VTbe)*exp(Vbe/VTbe)*(Vt/VA);
+    double BJT::getVce() {
+		return(Vbc);
+    }
 
-}
+//2. Methods to compute the parameters of the linear model needed to set the templates
+
+	double BJT::setConductanceBC() {
+		return (IsBc/bjt_Vt)*exp(Vbc/VtBc);
+	}
+
+	double BJT::setCurrentBC (){
+		return  IsBc*(exp(Vbc/VtBc)-1) - (setConductanceBC() * Vbc);
+	}
+
+	double BJT::setConductanceBE() {
+		return (IsBe/bjt_Vt)*exp(Vbe/VtBe);
+	}
+
+	double BJT::setCurrentBE() {
+		return  IsBe*(exp(Vbc/VtBe)-1) - (setConductanceBE() *Vbe);
+	}
+
+	double BJT::sourceG1(){
+		return alfa*(IsBe/VtBe)*exp(Vbe/VtBe)*(bjt_Vt/VA);
+	}
+
+	double BJT::sourceG2(){
+		return -1*(IsBc/VtBc)*exp(Vbc/VtBe)*(bjt_Vt/VA);
+	}
+
+	double BJT::sourceG3(){
+		return  (alfa*iDE() - iDC())/VA;
+	}
+
+	double BJT::sourceI0(){
+	//    Vce = nodalAnalysisMatrix[!!!!!!!!!COLETOR!!!!!!!!!!!!] - nodalAnalysisMatrix[!!!!!!!!!!!!EMISSOR!!!!!!!!!]; //vCE
+
+	   return sourceG3()*Vce - sourceG1()*Vbe - sourceG2()*Vbc - sourceG3()*Vce;
+	}
+
+	// double BJT:: currentIc() {
+
+	// 	return - Vbc / GC
+	// }
+
+//3. Early Effect
+
+	//Current through diode between base and emitter
+	double BJT::iDE(){
+		return ((IsBe)*exp(Vbe/VtBe) - 1);
+	}
+
+	//Current through diode between base and collector
+	double BJT::iDC(){
+		return ((IsBc)*exp(Vbc/VtBc) - 1);
+		/*  !!!!!   TENHO QUE COLOCAR ISSO NA PRIMEIRA ITERAÇÃO LÁ FORA	   !!!!!!
+		Vbc = bjt_Vt;
+
+		if (type == "PNP"){
+			bjt_Vt=-bjt_Vt;
+		}
+		*/
+	}
+
+//4. Set BJT template
+void BJT::setTemplate(ComplexVector &nodalSystem) {
+
+	//Base Coletor
+	//Diodo
+	//Resistor
+	bjt_g = setConductanceBC();
+	nodalSystem[nodeBase][nodeBase] += bjt_g;
+	nodalSystem[nodeCollector][nodeCollector] += bjt_g;
+	nodalSystem[nodeBase][nodeCollector] -= bjt_g;
+	nodalSystem[nodeCollector][nodeBase] -= bjt_g;
+
+	//Fonte de corrente
+	bjt_g = setCurrentBC();
+	nodalSystem[nodeBase][extraNode] += bjt_g;
+	nodalSystem[nodeCollector][extraNode] -= bjt_g;
+
+	//Fonte de corrente controlada
+	bjt_g = alfa * setConductanceBE();
+	nodalSystem[nodeBase][nodeCollector] += bjt_g;
+	nodalSystem[nodeCollector][nodeEmitter] += bjt_g;
+	nodalSystem[nodeBase][nodeEmitter] -= bjt_g;
+	nodalSystem[nodeCollector][nodeCollector] -= bjt_g;
+
+	//Fonte de corrente
+	bjt_g = alfa * setCurrentBE();
+	nodalSystem[nodeBase][extraNode] -= bjt_g;
+	nodalSystem[nodeCollector][extraNode] += bjt_g;
+
+	//Base Emissor
+	//Diodo
+	//Resistor
+	bjt_g = setConductanceBE();
+	nodalSystem[nodeCollector][nodeCollector] += bjt_g;
+	nodalSystem[nodeEmitter][nodeEmitter] += bjt_g;
+	nodalSystem[nodeCollector][nodeEmitter] -= bjt_g;
+	nodalSystem[nodeEmitter][nodeCollector] -= bjt_g;
+
+	//Fonte de corrente
+	bjt_g = setCurrentBE();
+	nodalSystem[nodeCollector][extraNode] -= bjt_g;
+	nodalSystem[nodeEmitter][extraNode] += bjt_g;
+
+	//Fonte de corrente controlada
+	bjt_g = alfaR * setConductanceBC();
+	nodalSystem[nodeCollector][nodeCollector] -= bjt_g;
+	nodalSystem[nodeEmitter][nodeBase] -= bjt_g;
+	nodalSystem[nodeCollector][nodeBase] += bjt_g;
+	nodalSystem[nodeEmitter][nodeCollector] += bjt_g;
+
+	//Fonte de corrente
+	bjt_g = alfaR * setCurrentBC();
+	nodalSystem[nodeCollector][extraNode] += bjt_g;
+	nodalSystem[nodeEmitter][extraNode] -= bjt_g;
+
+	//Elementos entre da Coletor e Emissor
+	//implementaçao de early
+	//Fonte de corrente
+	// sourceI0()
 
 
-double BJT::fonteG2(){
-	return -1*(Isbc/VTbc)*exp(Vbc/VTbe)*(Vt/VA);
-}
+	//bjt_g = sourceI0(); //(1 - alfa*node].alfaR));
+	//if(!strcmp(BJT_type,"PNP")) bjt_g =- bjt_g;
 
-double BJT::fonteG3(){
-	return  (alfa*iDE() - iDC())/VA;
-}
+	//If PNP, invert bjt_g
+	if (bjt_type.compare("PNP") == 0) {
+		bjt_g = - sourceI0();
+    }
+    else {
+		bjt_g = sourceI0();
+    }
+	nodalSystem[nodeBase][extraNode]-=bjt_g;
+	nodalSystem[nodeEmitter][extraNode]+=bjt_g;
 
-double BJT::fonteI0(){
+	// G1*(Vbe*)
+	//bjt_g = sourceG1(); //(1 - alfa*node].alfaR));
+	//if(!strcmp(BJT_type,"PNP")) bjt_g = - bjt_g;
 
-//    Vce = nodalAnalysisMatrix[!!!!!!!!!COLETOR!!!!!!!!!!!!] - nodalAnalysisMatrix[!!!!!!!!!!!!EMISSOR!!!!!!!!!]; //vCE
+	//If PNP, invert bjt_g
+	if (bjt_type.compare("PNP") == 0) {
+		bjt_g = - sourceG1();
+    }
+    else {
+		bjt_g = sourceG1();
+    }
+	nodalSystem[nodeBase][nodeCollector] += bjt_g;
+	nodalSystem[nodeEmitter][nodeEmitter] += bjt_g;
+	nodalSystem[nodeBase][nodeEmitter] -= bjt_g;
+	nodalSystem[nodeEmitter][nodeCollector] -= bjt_g;
 
-   return fonteG3()*Vce - fonteG1()*Vbe - fonteG2()*Vbc - fonteG3()*Vce;
-}
+	// G2*GBC
+	//bjt_g = sourceG2(); //(1 - alfa*node].alfaR));
+	//if(!strcmp(BJT_type,"PNP")) bjt_g = -bjt_g;
 
-// double BJT:: currentIc() {
-		
-// 	return - Vbc / GC
-// }
+	//If PNP, invert bjt_g
+	if (bjt_type.compare("PNP") == 0) {
+		bjt_g = - sourceG2();
+    }
+    else {
+		bjt_g = sourceG2();
+    }
+	nodalSystem[nodeBase][nodeCollector] += bjt_g;
+	nodalSystem[nodeEmitter][nodeBase] += bjt_g;
+	nodalSystem[nodeBase][nodeBase] -= bjt_g;
+	nodalSystem[nodeEmitter][nodeCollector] -= bjt_g;
 
+	// G3*GCE
+	//bjt_g = sourceG3(); //(1 - alfa*node].alfaR));
+	//if(!strcmp(BJT_type,"PNP")) bjt_g = -bjt_g;
 
-
-void BJT::SetTemplate(ComplexVector &nodalSystem) {
-        //Estampa do Transistor
-            //Base Coletor
-            // Diodo
-            //Resistor
-            g=conductanceBC();
-            nodalSystem[nodeB][nodeB]+=g;
-            nodalSystem[nodeC][nodeC]+=g;
-            nodalSystem[nodeB][nodeC]-=g;
-            nodalSystem[nodeC][nodeB]-=g;
-            //Fonte de corrente
-            g=currentBC();
-            nodalSystem[nodeB][extraNode]+=g;
-            nodalSystem[nodeC][extraNode]-=g;
-            //Fonte de corrente controlada
-            g=alfa*conductanceBE();
-            nodalSystem[nodeB][nodeC]+=g;
-            nodalSystem[nodeC][nodeE]+=g;
-            nodalSystem[nodeB][nodeE]-=g;
-            nodalSystem[nodeC][nodeC]-=g;
-            //Fonte de corrente
-            g=alfa*currentBE();
-            nodalSystem[nodeB][extraNode]-=g;
-            nodalSystem[nodeC][extraNode]+=g;
-            //Base Emissor
-            // Diodo
-            //Resistor
-            g=conductanceBE();
-            nodalSystem[nodeC][nodeC]+=g;
-            nodalSystem[nodeE][nodeE]+=g;
-            nodalSystem[nodeC][nodeE]-=g;
-            nodalSystem[nodeE][nodeC]-=g;
-            //Fonte de corrente
-            g=currentBE();
-            nodalSystem[nodeC][extraNode]-=g;
-            nodalSystem[nodeE][extraNode]+=g;
-            //Fonte de corrente controlada
-            g=alfaR*conductanceBC();
-            nodalSystem[nodeC][nodeC]-=g;
-            nodalSystem[nodeE][nodeB]-=g;
-            nodalSystem[nodeC][nodeB]+=g;
-            nodalSystem[nodeE][nodeC]+=g;
-            //Fonte de corrente
-            g=alfaR*currentBC();
-            nodalSystem[nodeC][extraNode]+=g;
-            nodalSystem[nodeE][extraNode]-=g;
-
-            //Elementos entre da Coletor e Emissor
-            //implementaçao de early
-            //Fonte de corrente
-            // fonteI0()
-
-            g = fonteI0(); //(1 - alfa*node].alfaR));
-            if(!strcmp(BJT_type,"PNP")) g=-g;
-            //printf("%d  ", g);
-            nodalSystem[nodeB][extraNode]-=g;
-            nodalSystem[nodeE][extraNode]+=g;
-
-            // G1*(Vbe*)
-            g = fonteG1(); //(1 - alfa*node].alfaR));
-            if(!strcmp(BJT_type,"PNP")) g=-g;
-            // printf("%d  ", g);
-            nodalSystem[nodeB][nodeC]+=g;
-            nodalSystem[nodeE][nodeE]+=g;
-            nodalSystem[nodeB][nodeE]-=g;
-            nodalSystem[nodeE][nodeC]-=g;
-
-            // G2*GBC
-            g = fonteG2(); //(1 - alfa*node].alfaR));
-            if(!strcmp(BJT_type,"PNP")) g=-g;
-            // printf("%d  ", g);
-            nodalSystem[nodeB][nodeC]+=g;
-            nodalSystem[nodeE][nodeB]+=g;
-            nodalSystem[nodeB][nodeB]-=g;
-            nodalSystem[nodeE][nodeC]-=g;
-
-            // G3*GCE
-            g = fonteG3(); //(1 - alfa*node].alfaR));
-            if(!strcmp(BJT_type,"PNP")) g=-g;
-            // printf("%d  ", g);
-            nodalSystem[nodeB][nodeB]+=g;
-            nodalSystem[nodeE][nodeE]+=g;
-            nodalSystem[nodeB][nodeE]-=g;
-            nodalSystem[nodeE][nodeB]-=g;
-
+	//If PNP, invert bjt_g
+	if (bjt_type.compare("PNP") == 0) {
+		bjt_g = - sourceG3();
+    }
+    else {
+		bjt_g = sourceG3();
+    }
+	nodalSystem[nodeBase][nodeBase] += bjt_g;
+	nodalSystem[nodeEmitter][nodeEmitter] += bjt_g;
+	nodalSystem[nodeBase][nodeEmitter] -= bjt_g;
+	nodalSystem[nodeEmitter][nodeBase] -= bjt_g;
 
 /*
-            if (Vbc == Vt/2) {
-                    Cr = C0bc/(1-VbcVt)^n;
+	if (Vbc == bjt_Vt/2) {
+		Cr = C0bc/(1-VbcVt)^bjt_n;
 
-                  capacitiveAdmittance = Complex(0.0, frequency*Cr);
+		capacitiveAdmittance = Complex(0.0, frequency*Cr);
 
-                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-            }
-
-
-            if (Vbc > 0) {
-                  Cd = (C1bc*expVbcVT)-1;
-                  capacitiveAdmittance = Complex(0.0, frequency*Cd);
-
-                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-            }
-
-            if ( Vbe == Vt/2) {
-                    Cr = C0bc/(1-(Vbe/Vt))^n;
-
-                  capacitiveAdmittance = Complex(0.0, frequency*Cr);
-
-                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-            }
+		nodalSystem[nodeBase][nodeBase] += capacitiveAdmittance;
+		nodalSystem[nodeBase][nodeCollector] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeBase] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeCollector] += capacitiveAdmittance;
+	}
 
 
-            if (Vbe* > 0) {
-                  Cd = (C1bc*exp(Vbe/VT)-1);
-                  capacitiveAdmittance = Complex(0.0, frequency*Cd);
+	if (Vbc > 0) {
+		Cd = (C1bc*expVbcVT)-1;
+		capacitiveAdmittance = Complex(0.0, frequency*Cd);
 
-                  nodalSystem[nodeB][nodeB] += capacitiveAdmittance;
-                  nodalSystem[nodeB][nodeC] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeB] += conj(capacitiveAdmittance);
-                  nodalSystem[nodeC][nodeC] += capacitiveAdmittance;
-            }
+		nodalSystem[nodeBase][nodeBase] += capacitiveAdmittance;
+		nodalSystem[nodeBase][nodeCollector] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeBase] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeCollector] += capacitiveAdmittance;
+	}
+
+	if ( Vbe == bjt_Vt/2) {
+		Cr = C0bc/(1-(Vbe/bjt_Vt))^bjt_n;
+
+		capacitiveAdmittance = Complex(0.0, frequency*Cr);
+
+		nodalSystem[nodeBase][nodeBase] += capacitiveAdmittance;
+		nodalSystem[nodeBase][nodeCollector] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeBase] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeCollector] += capacitiveAdmittance;
+	}
+
+	if (Vbe* > 0) {
+		Cd = (C1bc*exp(Vbe/bjt_Vt)-1);
+		capacitiveAdmittance = Complex(0.0, frequency*Cd);
+
+		nodalSystem[nodeBase][nodeBase] += capacitiveAdmittance;
+		nodalSystem[nodeBase][nodeCollector] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeBase] += conj(capacitiveAdmittance);
+		nodalSystem[nodeCollector][nodeCollector] += capacitiveAdmittance;
+	}
 */
 }
 
 
-BJT::~BJT()
-{
-    //dtor
+BJT::~BJT() {
 }

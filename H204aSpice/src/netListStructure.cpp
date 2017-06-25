@@ -18,12 +18,12 @@
 #include <vector>
 #include <sstream>
 
-#define ZERO_ERROR_THRESHOLD 1e-9
+#define MIN_ERROR_THRESHOLD 1e-9
 #define NEWTON_RAP_MAX_ITERATIONS 200
 #define NEWTON_RAP_MAX_RAND 100
 #define NEWTON_RAP_STEP 0.05
 #define MAX_ERROR 0.05
-#define PI 3.14
+#define PI 3.14159265359
 
 
 using namespace std;
@@ -40,7 +40,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 		bool setExtraNode, validComponent;
 
-	//	2. PRESET CLASS VARIABLES
+	//	2. PRESET NETLIST VARIABLES
 
 		hasBJT = false;
 		validCommandLine = false;
@@ -122,14 +122,20 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 						break;
 
 				//BJT
-					case 'Q':	//BJT
+					case 'Q':
 						newComponent = new BJT(fileLine);
 						hasBJT = true;
 						break;
 
-				//Command Line
+				//Command Line and Comments
 					case '.':
 						setCommandLineParameters(fileLine);
+						validComponent = false;
+						break;
+
+				//Comments
+					case '*':
+						cout << " Comentario: " << fileLine << endl << endl;
 						validComponent = false;
 						break;
 
@@ -173,11 +179,9 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		newComponent = NULL;
 		netlistFile.close();
 
-		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
-		cout << "_____________________________________________________\n" << endl;
+		cout << "_______________________________________________________________\n" << endl;
 
-	//	4. SET OTHER CIRCUIT PARAMETERS
-			//Update total number of nodes, considering extra nodes
+		//Update total number of nodes, considering extra nodes
 			numTotalNodes = numNodes + extraNodeVector.size();
 
 			//Check if frequency analysis parameters have been set
@@ -185,26 +189,13 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 				setCommandLineParameters("defautParameters");
 			}
 
-	//	5 . SET NODAL SYSTEM
+		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
+		cout << "_______________________________________________________________\n" << endl;
 
-		//Initialize the nodal system with zeros - line and column [0,0] represent the ground
-
-
-		//Build nodal system
-		//buildNodalSystem(0.0);
+	//	4 . SET NODAL SYSTEM
 
 		//Allocate memory for the output matrix - first line stores frequency values
 		nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.0);
-
-		//Element netlist is created in this object
-		//isElementNetlistShared = false;
-
-	//	5. USE NEWTON RAPHSON TO SET BJT VOLTAGES AND CURRENTS
-		newtonRaphson();
-
-		printOperatingPoint();
-
-	//	6. UPDATE NODAL SYSTEM
 
 }
 
@@ -257,13 +248,13 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 		cout << "\n Parametros de analise em frequencia configurados com sucesso:" << endl;
 	}
 
-	cout << "> Step Type = " << stepType << endl;
-	cout << "> Step = " << step << endl;
-	cout << "> inicialFrequency = " << inicialFrequency << endl;
-	cout << "> finalFrequency = " << finalFrequency << endl;
+	cout << " > Step = " << step << endl;
+	cout << " > StepType = " << stepType << endl;
+	cout << " > Frequency Range: " << inicialFrequency << " to " << finalFrequency << endl << endl;
 
 	return;
 }
+
 
 //Build nodal system for a given frequency
 void netlistStructure::buildNodalSystem(const double frequency) {
@@ -276,13 +267,10 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 	for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 		componentNetlist.at(index)->setTemplate(nodalSystem);
 	}
-	return;
 }
 
 //Solve the nodal system matrix
 int netlistStructure::solveNodalSystem() {
-
-	//const double ZERO_ERROR_THRESHOLD = 1e-9;
 
 	unsigned int i, j, l, a;
 	Complex temp, pivot;
@@ -307,8 +295,8 @@ int netlistStructure::solveNodalSystem() {
 			}
 		}
 
-		if (abs(temp) < ZERO_ERROR_THRESHOLD) {
-			cout << "Erro: sistema singular.";
+		if (abs(temp) < MIN_ERROR_THRESHOLD) {
+			cout << "Erro: sistema singular." << endl;
 			return(1);
 		}
 
@@ -338,116 +326,116 @@ int netlistStructure::solveNodalSystem() {
 }
 
 //Compute BJT tensions using Newton Raphson method
-void netlistStructure::newtonRaphson() {
-
-//nv tem que virar nosso numero total de variáveis
-//tem que declarar solução atual e ultima solução, e todo o resto
-//mudar as funções de abrir arquivo
+int netlistStructure::newtonRaphson() {
 
 	srand(time(0));
 
 	//Initialize solution vector with zeros
 	nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.0);
 
-    bool converged = false;
+	bool converged = false;
 	unsigned int countIterations = 0;
 	unsigned int countRandomizations = 0;
 
-    // loop para definir o maximo de tentativas de newtempoAtivo-raphson
-    while (!converged) {
+    while(!converged) {
 
-        if ( (countIterations == NEWTON_RAP_MAX_ITERATIONS) && (countRandomizations < NEWTON_RAP_MAX_RAND)) {
+		//1. Build and solve the nodal system
+			buildNodalSystem(0.0);
+			if(!solveNodalSystem()) return(1);
 
-            for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-                nodalSolutionVector[index]=((rand()%100)/100.0);
-	            ++countRandomizations;
-	            countIterations=0;
-            }
-        }
+			converged = true;
 
-        if (countRandomizations == NEWTON_RAP_MAX_RAND) {
-            printf("\nOs calculos nao convergiram.\n");
-            exit(1);
-        }
-
-        // monta a matriz de condutancia e resolve o sistema para o passo interno atual
-        buildNodalSystem(0.0); //montarEstampas();
-        solveNodalSystem();//resolverSistema();
-
-        converged = true;
-
-		for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-            if (fabs(nodalSolutionVector[index] - nodalSystem[index][numTotalNodes+1]) > MAX_ERROR) {
-                converged = false;
-        	    ++countIterations;
+			//Compare new solution with solution from previous iteration
+			for (unsigned int index = 1; index <= numTotalNodes; ++index) {
+				if (fabs(nodalSolutionVector[index] - nodalSystem[index][numTotalNodes+1]) > MAX_ERROR) {
+					converged = false;
+					++countIterations;
+				}
 			}
-        }
 
-        // Copia a solucao atual para o vetor solucao
-        for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-            nodalSolutionVector[index] = nodalSystem[index][numTotalNodes+1];
-        }
+		//2. If solution has not converged
+			if(!converged) {
 
-    	BJT *tempBJT;
+				//Reset solution vector with ramdom values if maximum number of iterations is reached
+				if( (countIterations == NEWTON_RAP_MAX_ITERATIONS) && (countRandomizations < NEWTON_RAP_MAX_RAND)) {
 
-		for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
+					for (unsigned int index = 1; index <= numTotalNodes; ++index) {
+						nodalSolutionVector[index]=((rand()%100)/100.0);
+						++countRandomizations;
+						countIterations=0;
+					}
 
-			if (componentNetlist.at(index)->type == 'Q') {
+				//Close program in case maximum number of randomizations is reached
+				} else if(countRandomizations == NEWTON_RAP_MAX_RAND) {
+					return(1);
 
-				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
-				tempBJT->Vbc = abs(nodalSolutionVector[tempBJT->nodeB]) - abs(nodalSolutionVector[tempBJT->nodeC]);
-    			tempBJT->Vbe = abs(nodalSolutionVector[tempBJT->nodeB]) - abs(nodalSolutionVector[tempBJT->nodeE]);
-    			tempBJT->Vce = abs(nodalSolutionVector[tempBJT->nodeC]) - abs(nodalSolutionVector[tempBJT->nodeE]);
+				//Copy new solution to nodalSolutionVector, for comparison in the next iteration
+				} else {
+					for (unsigned int index = 1; index <= numTotalNodes; ++index) {
+						nodalSolutionVector[index] = nodalSystem[index][numTotalNodes+1];
+					}
+				}
 			}
-		}
 
-		tempBJT = NULL;
+		//3. Use new solution as input to update Vbc, Vbe and Vce for every BJT in the circuit
+			BJT *tempBJT;
+			for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 
+	            //If component is BJT, update Vbc, Vbe and Vce
+				if (componentNetlist.at(index)->type == 'Q') {
+					tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
+					//tempBJT->setTerminalVoltages(nodalSolutionVector);
 
+					tempBJT->Vbc = abs(nodalSolutionVector[tempBJT->nodeBase]) - abs(nodalSolutionVector[tempBJT->nodeCollector]);
+					tempBJT->Vbe = abs(nodalSolutionVector[tempBJT->nodeBase]) - abs(nodalSolutionVector[tempBJT->nodeEmitter]);
+					tempBJT->Vce = abs(nodalSolutionVector[tempBJT->nodeCollector]) - abs(nodalSolutionVector[tempBJT->nodeEmitter]);
+				}
+			}
+			tempBJT = NULL;
     }
-}
-
-//Find operating point for all transistors
-void netlistStructure::findOperatingPoint() {
-
-	return;
+    //If algorithm reaches this point, solution must have converged
+    return(0);
 }
 
 //Operating point output
-void netlistStructure::printOperatingPoint() {
+void netlistStructure::findOperatingPoint() {
 
 	if (hasBJT) {
 
+		double Ic, Ib;
 		BJT *tempBJT;
 
-		double Ic, Ib;
-
+		//Search for every BJT in the netlist
 		for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 
 			if (componentNetlist.at(index)->type == 'Q') {
 
 				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
 
-				Ic = tempBJT->alfa * tempBJT->currentBE() - tempBJT->currentBC();
+				//Calculate and print the operating point
+				Ic = tempBJT->alfa * tempBJT->setCurrentBE() - tempBJT->setCurrentBC();
 				Ib = Ic * (tempBJT->alfa - 1) / (tempBJT->alfa);	 // ic = beta * ib entao ib = ic / beta, sendo beta = alfa / (alfa - 1)
 
-				cout << "> TRANSISTOR NAME: " << tempBJT->name;
-				cout << "> Vce = " << tempBJT->Vce << endl;
-				cout << "> Ic = " << Ic << endl;
-				cout << "> Ib = " << Ib << endl;
+				cout << " TRANSISTOR NAME: " << tempBJT->name;
+				cout << " > Vce = " << tempBJT->Vce << endl;
+				cout << " > Ic = " << Ic << endl;
+				cout << " > Ib = " << Ib << endl;
 			}
 		}
-
 		tempBJT = NULL;
 	}
-	return;
 }
+
+/*
 
 //Perform frequency analysis
 void netlistStructure::freqAnalysis() {
 	return;
 }
 
+*/
 
 netlistStructure::~netlistStructure() {
 }
+
+

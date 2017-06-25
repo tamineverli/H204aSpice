@@ -10,7 +10,8 @@
 class AmpOp : public Component
 {
     public:
-        AmpOp(const string netlistLine);
+        AmpOp(string netlistLine);
+        
 		virtual void setTemplate(ComplexVector &nodalSystem);
 		virtual void print();
 		virtual ~AmpOp();

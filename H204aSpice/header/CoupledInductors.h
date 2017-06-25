@@ -12,14 +12,16 @@ class CoupledInductors : public Component
 {
     public:
         CoupledInductors(string netlistLine);
+
+    	//Find L1 and L2 and compute the mutual inductance
+		void locateInductors(vector< Component *> &nodalSystem);
 		virtual void setTemplate(ComplexVector &nodalSystem);
 		virtual void print();
-		void locateInductors(vector< Component *> &nodalSystem);	//Initializes L1 and L2 Must
 		virtual ~CoupledInductors();
 
 		string L1Name, L2Name;
-		unsigned int extraNode2;
 		double L1, L2, k;
+		unsigned int extraNode2;
 		Complex mutualInductance;
 };
 

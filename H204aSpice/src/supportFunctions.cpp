@@ -36,6 +36,6 @@ string askNetlistPath() {
 
 	cout << "Informe o nome do arquivo de NETLIST que deseja analisar: ";
 	getline(cin, netlistName);
-
-	return("netlists/" + netlistName);
+	return("C:/H204aSpice/bin/Debug/netlists/" + netlistName);
+	//return("netlists/" + netlistName);
 }
