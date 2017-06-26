@@ -21,10 +21,10 @@ class netlistStructure
         int newtonRaphson();
         //Find operating point for all transistors
 		void findOperatingPoint();
-		//Perform frequency analysis
-		//void freqAnalysis();
-		//Frequency analysis output
-		//void printFreqAnalysis();
+		//Perform frequency analysis onscreen
+		void freqAnalysis();
+		//Frequency analysis output to file
+		void freqAnalysisToFile(double scaleFactor);
 
         virtual ~netlistStructure();
 
@@ -42,10 +42,8 @@ class netlistStructure
 
 		string netlistFilePath, stepType;
 		unsigned int numNodes, numTotalNodes, solutionIndex;
-		double beginFrequency, endFrequency, frequencyStep;
+		double frequencyPoints, inicialFrequency, finalFrequency;	
 		bool hasBJT, validCommandLine, isElementNetlistShared;
-
-        double step, inicialFrequency, finalFrequency;
 
 };
 

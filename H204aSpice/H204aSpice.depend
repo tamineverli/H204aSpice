@@ -283,7 +283,7 @@
 1498017039 source:c:\h204aspice\src\inductor.cpp
 	"../header/Inductor.h"
 
-1498429986 source:c:\h204aspice\src\main.cpp
+1498446256 source:c:\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
@@ -298,13 +298,13 @@
 	<stdlib.h>
 	<string>
 
-1498429718 c:\h204aspice\header\netliststructure.h
+1498445718 c:\h204aspice\header\netliststructure.h
 	<string>
 	<complex>
 	<vector>
 	"Component.h"
 
-1498363174 source:c:\h204aspice\src\netliststructure.cpp
+1498442996 source:c:\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
 	"../header/Capacitor.h"
@@ -349,7 +349,7 @@
 1498017105 source:c:\h204aspice\src\voltagesrc.cpp
 	"VoltageSrc.h"
 
-1498422041 source:c:\h204aspice\src\bjt.cpp
+1498433432 source:c:\h204aspice\src\bjt.cpp
 	"BJT.h"
 	<iostream>
 

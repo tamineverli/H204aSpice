@@ -101,13 +101,6 @@ BJT::BJT(string netlistLine) : Component(netlistLine) {
 	//Current through diode between base and collector
 	double BJT::iDC(){
 		return ((IsBc)*exp(Vbc/VtBc) - 1);
-		/*  !!!!!   TENHO QUE COLOCAR ISSO NA PRIMEIRA ITERAÇÃO LÁ FORA	   !!!!!!
-		Vbc = bjt_Vt;
-
-		if (type == "PNP"){
-			bjt_Vt=-bjt_Vt;
-		}
-		*/
 	}
 
 //4. Set BJT template

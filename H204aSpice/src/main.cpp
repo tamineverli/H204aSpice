@@ -82,34 +82,46 @@ int main(int argc, char** argv)
 		cin.get();
 
 //	3. OPERATING POINT
-		programHeader();
-		cout << "\nAnalisando o circuito...\n\n" << endl;
+	
+	programHeader();
+	cout << "\nAnalisando o circuito...\n\n" << endl;
 
-		if(myCircuit.hasBJT) {
+	if(myCircuit.hasBJT) {
 
-			if(myCircuit.newtonRaphson()) {
+		if(myCircuit.newtonRaphson()) {
 
-				cout << "___________________________________________\n" << endl;
-				cout << "Ponto de operacao dos transistores:\n" << endl;
-				myCircuit.findOperatingPoint();
-				
-				cout << "\n___________________________________________\n" << endl;
-				cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
-				cin.get();
+			cout << "___________________________________________\n" << endl;
+			cout << "Ponto de operacao dos transistores:\n" << endl;
+			myCircuit.findOperatingPoint();
 
-			} else {
-				cout << "O sistema nodal nao convergiu: ponto de operacao nao encontrado.\n" << endl;
-				cin.get();
-				return(0);
-			}
+			cout << "\n___________________________________________\n" << endl;
+			cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
+			cin.get();
+
+		} else {
+			cout << "O sistema nodal nao convergiu: ponto de operacao nao encontrado.\n" << endl;
+			cin.get();
+			return(0);
 		}
+	}
+	else {
+        myCircuit.buildNodalSystem(0.0);
+        myCircuit.solveNodalSystem();
+        cout << " Analise concluida!\n" << endl;
+        cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
+		cin.get();
+
+	}
 
 //	4. FREQUENCY ANALYSIS
-		
-		//programHeader();
-		//cout << "\nAnalise em frequencia...\n\n" << endl;
-		//myCircuit.freqAnalysis();
-		//myCircuit.printFreqAnalysis();
+		programHeader();
+		cout << "\n Iniciando analise em frequencia...\n\n" << endl;
+		myCircuit.freqAnalysis();
+
+		cout << "\n___________________________________________\n" << endl;
+		cout << " Obrigado por utilizar o H204a Spice!\n" << endl;
+		cout << " Pressione qualquer tecla para sair..." << endl;
+		cin.get();
 
   	return 0;
 

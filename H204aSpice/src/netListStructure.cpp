@@ -211,14 +211,14 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 	 */
 
 	const string defautStepType = "LIN";
-	const double defautInicialFreq = 0;
-	const double defautFinalFreq = 1;
-	const double defautStep = 1;
+	const double defautInicialFreq = 5;
+	const double defautFinalFreq = 60000;
+	const double defautPoints = 5;
 
 	//Set parameters with defaut values if necessary
 	if (commandLine == "defautParameters") {
 		stepType = defautStepType;
-		step = defautStep;
+		frequencyPoints = defautPoints;
 		inicialFrequency = defautInicialFreq;
 		finalFrequency = defautFinalFreq;
 
@@ -233,7 +233,7 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 		blankPosition = commandLine.find(" ");
 		istringstream commandLineInput(commandLine.substr(blankPosition + 1));
 
-		commandLineInput >> stepType >> step >> inicialFrequency >> finalFrequency;
+		commandLineInput >> stepType >> frequencyPoints >> inicialFrequency >> finalFrequency;
 
 		//If step type is not valid, set it with its defaut value
 		if ((stepType != "DEC") && (stepType != "OCT") && (stepType != "LIN")) {
@@ -248,7 +248,7 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 		cout << "\n Parametros de analise em frequencia configurados com sucesso:" << endl;
 	}
 
-	cout << " > Step = " << step << endl;
+	cout << " > Points = " << frequencyPoints << endl;
 	cout << " > StepType = " << stepType << endl;
 	cout << " > Frequency Range: " << inicialFrequency << " to " << finalFrequency << endl << endl;
 
@@ -297,7 +297,7 @@ int netlistStructure::solveNodalSystem() {
 
 		if (abs(temp) < MIN_ERROR_THRESHOLD) {
 			cout << "Erro: sistema singular." << endl;
-			return(1);
+			return(0);
 		}
 
 		// To diagonalize the matrix, the condition below must be "j > 0". However, for this programm, it is enought to solve the system, done with the condition "j > i"
@@ -322,7 +322,7 @@ int netlistStructure::solveNodalSystem() {
 	for (i = 1; i < nodalSolutionVector.capacity(); ++i) {
 		nodalSolutionVector.at(i) = nodalSystem[i][nodalSystem.at(i).capacity() - 1];
 	}
-	return(0);
+	return(1);
 }
 
 //Compute BJT tensions using Newton Raphson method
@@ -341,7 +341,7 @@ int netlistStructure::newtonRaphson() {
 
 		//1. Build and solve the nodal system
 			buildNodalSystem(0.0);
-			if(!solveNodalSystem()) return(1);
+			if(!solveNodalSystem()) return(0);
 
 			converged = true;
 
@@ -367,7 +367,7 @@ int netlistStructure::newtonRaphson() {
 
 				//Close program in case maximum number of randomizations is reached
 				} else if(countRandomizations == NEWTON_RAP_MAX_RAND) {
-					return(1);
+					return(0);
 
 				//Copy new solution to nodalSolutionVector, for comparison in the next iteration
 				} else {
@@ -394,10 +394,10 @@ int netlistStructure::newtonRaphson() {
 			tempBJT = NULL;
     }
     //If algorithm reaches this point, solution must have converged
-    return(0);
+    return(1);
 }
 
-//Operating point output
+//Compute and print operating point for all transistors
 void netlistStructure::findOperatingPoint() {
 
 	if (hasBJT) {
@@ -426,14 +426,138 @@ void netlistStructure::findOperatingPoint() {
 	}
 }
 
-/*
-
 //Perform frequency analysis
 void netlistStructure::freqAnalysis() {
-	return;
+
+	double frequency, step, scaleFactor;
+	char option;
+
+	//1. Define scale factor
+		if (stepType == "LIN") {
+			step = ceil((finalFrequency - inicialFrequency)/(frequencyPoints - 1));
+			scaleFactor = step/inicialFrequency + 1;
+		}
+		else if (stepType == "DEC") {
+			scaleFactor = pow(10.0, (1/(frequencyPoints - 1)));
+		}
+		else if (stepType == "OCT") {
+			scaleFactor = pow(2.0, (1/(frequencyPoints - 1)));
+		}
+
+	//2. Write the header row of the output table, containing frequency, voltage and current identifiers
+
+		//Frequency header row
+		cout << "F";
+
+		//Voltage header row: module and phase
+		for (unsigned int index = 0; index < numNodes; ++index) {
+			cout << " " << (index + 1) << "m " << (index + 1) << "f";
+		}
+		//Current header row: module and phase
+		for (unsigned int index = 0; index < extraNodeVector.size(); ++index) {
+			cout << " " << extraNodeVector[index] << "m " << extraNodeVector[index] << "f";
+		}
+
+		cout << endl;
+
+
+	//3. Build and solve the system for a range of frequencies
+		for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
+
+			buildNodalSystem(2*PI*frequency);
+
+			if (solveNodalSystem()) {
+				cout << " Nao foi possivel calcular a analise na frequencia " << frequency << ". Programa abortado." << endl;
+				cout << " Pressione qualquer tecla para fechar..." << endl;
+				cin.get();
+
+				exit(EXIT_FAILURE);
+			}
+
+			cout << scientific << setprecision(4) << abs(nodalSolutionVector.at(0));
+
+			//Write the output splitting values into magnitude and phase (start in 1 to ignore ground node)
+			for (unsigned int column = 1; column < nodalSolutionVector.size(); ++column) {
+				cout << " " << scientific << setprecision(5) << abs(nodalSolutionVector.at(column))
+						    << " " << fixed << setprecision(3) << arg(nodalSolutionVector.at(column))*(180/PI);
+			}
+			cout << endl; //this line is done!
+
+			//Set step for next iteration
+			if (stepType == "LIN")
+				scaleFactor = step/frequency + 1;
+			else
+				step = frequency*(scaleFactor - 1);
+		}
+	cout << "\n___________________________________________________________________________\n" << endl;
+	cout << " Analise em frequencia realizada com sucesso.\n" << endl;
+	cout << " Deseja salvar o resultado? [Y/N]";
+
+	while( (option != 'Y') || (option != 'N')) {
+		cin.get(option);
+	}
+	if(option == 'Y') freqAnalysisToFile(scaleFactor);
 }
 
-*/
+//
+void netlistStructure::freqAnalysisToFile(double scaleFactor) {
+
+	double frequency, step;
+
+	string outputFileName;
+	ofstream outputFile;
+
+	//Set the file name
+	outputFileName = netlistFilePath.substr(0, netlistFilePath.find("."));
+	outputFileName += " - Frequency Analysis.tab";
+
+	outputFile.open(outputFileName);
+
+	if (!outputFile) {
+		cout << "\n\nErro: nao foi possivel abrir o arquivo." << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	//1. Write the header of the output table, containing frequency, voltage and current identifiers
+
+		outputFile << "F";
+
+		for (unsigned int index = 0; index < numNodes; ++index) {
+			outputFile << " " << (index + 1) << "m " << (index + 1) << "f";
+		}
+
+		for (unsigned int index = 0; index < extraNodeVector.size(); ++index) {
+			outputFile << " " << extraNodeVector[index] << "m " << extraNodeVector[index] << "f";
+		}
+
+		outputFile << endl;
+
+	//3. Write the output for a range of frequencies
+		for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
+
+			buildNodalSystem(2*PI*frequency);
+			solveNodalSystem(); //no need to test if solution is right, as we did it before
+
+			outputFile << scientific << setprecision(4) << abs(nodalSolutionVector.at(0));
+
+			for (unsigned int column = 1; column < nodalSolutionVector.size(); ++column) {
+				outputFile << " " << scientific << setprecision(5) << abs(nodalSolutionVector.at(column))
+						   << " " << fixed << setprecision(3) << arg(nodalSolutionVector.at(column))*(180/PI);
+			}
+
+			outputFile << endl;
+
+			//Set step for next iteration
+			if (stepType == "LIN")
+				scaleFactor = step/frequency + 1;
+			else
+				step = frequency*(scaleFactor - 1);
+		}
+
+	outputFile.close();
+	cout << " Arquivo gravado com sucesso. \n Pressione qualquer tecla para continuar..." << outputFileName << "'." << endl;
+	cin.get();
+}
 
 netlistStructure::~netlistStructure() {
 }
