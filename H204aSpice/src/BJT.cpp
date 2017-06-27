@@ -180,6 +180,18 @@ void BJT::setTemplate(ComplexVector &nodalSystem) {
     else {
 		bjt_g = sourceI0();
     }
+//---------------------------------------------------------------------------
+//
+//                    VICTOR
+//
+//
+//!!!!!!!!!!!COLOCAR UM IF PRA AC NAS ESTAMPAS DAS FONTES DE CORRENTE COM 2 LINHAS!!!!!!!!!!!!!!!!!!!!!
+//
+//
+//RETIRAR ESSES COMENTÁRIOS INÚNEIS
+//
+//--------------------------------------------------------------------------------
+
 	nodalSystem[nodeBase][extraNode]-=bjt_g;
 	nodalSystem[nodeEmitter][extraNode]+=bjt_g;
 
