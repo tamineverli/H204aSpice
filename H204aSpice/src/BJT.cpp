@@ -11,13 +11,19 @@ BJT::BJT(string netlistLine) : Component(netlistLine) {
     blankPosition = netlistLine.find(" ");
 	istringstream in(netlistLine.substr(blankPosition + 1));
 
-	//cout << "parametros lidos " << netlistLine << endl;  //debug
-	in >> nodeCollector >> nodeBase >> nodeEmitter >> bjt_type >> alfa >> alfaR >> IsBe >> VtBe >> IsBc >> VtBc >> VA >> C0be >> C1be >> C0bc >> C1bc;
+	in >> nodeCollector >> nodeBase >> nodeEmitter >> bjt_type;
+
+	//The following arguments are optional - test eof before reading and set defaut values if necessary
+	if (in.eof()) {
+		alfa = 0.995;	alfaR = 0.5;	IsBe = 1e-9;	VtBe = 43.43e-3;	IsBc = 1e-9;	VtBc = 43.43e-3;	VA = 100;
+		C0be = 5e-12;	C1be = 100e-18;	C0bc = 5e-12;	C1bc = 100e-1;
+	} else {
+		in >> alfa >> alfaR >> IsBe >> VtBe >> IsBc >> VtBc >> VA >> C0be >> C1be >> C0bc >> C1bc;
+	}
 
 	bjt_Vt = 0.6;
 	bjt_n = 0.5;
 
-	//CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK CHECK
 	Vbc = 0.1;
 	Vbe = 0.1;
 	Vce = 0.1;

@@ -122,7 +122,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 						break;
 
 				//BJT
-					case 'Q':
+					case('Q' || 'q'):
 						newComponent = new BJT(fileLine);
 						hasBJT = true;
 						break;
@@ -211,8 +211,8 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 	 */
 
 	const string defautStepType = "LIN";
-	const double defautInicialFreq = 5;
-	const double defautFinalFreq = 60000;
+	const double defautInicialFreq = 0;
+	const double defautFinalFreq = 60;
 	const double defautPoints = 5;
 
 	//Set parameters with defaut values if necessary
@@ -233,16 +233,26 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 		blankPosition = commandLine.find(" ");
 		istringstream commandLineInput(commandLine.substr(blankPosition + 1));
 
-		commandLineInput >> stepType >> frequencyPoints >> inicialFrequency >> finalFrequency;
+		commandLineInput >> stepType;
 
 		//If step type is not valid, set it with its defaut value
 		if ((stepType != "DEC") && (stepType != "OCT") && (stepType != "LIN")) {
-			cout << "\n ALERTA: tipo de analise invalido. Opcao padrao selecionada." << endl;
+			cout << "\n ALERTA: tipo de analise nao reconhecido. Opcao padrao selecionada." << endl;
 			stepType = defautStepType;
 		}
 
-		// Sets the static variable frequency to the begin frequency
-		Component::setFrequency(inicialFrequency);
+		//Set defaut value for frequency points if input is invalid
+		if (commandLineInput.eof())
+			frequencyPoints = defautPoints;			//set defaut value
+		else commandLineInput >> frequencyPoints;	//set input value
+
+		//Set defaut value for frequency range if input is invalid
+		if (commandLineInput.eof()) {
+			inicialFrequency = defautInicialFreq;	//set defaut value
+			finalFrequency = defautFinalFreq;		//set defaut value
+		}
+		else commandLineInput >> inicialFrequency >> finalFrequency;	//set input value
+
 		validCommandLine = true;
 
 		cout << "\n Parametros de analise em frequencia configurados com sucesso:" << endl;
@@ -466,7 +476,7 @@ void netlistStructure::freqAnalysis() {
 
 			buildNodalSystem(2*PI*frequency);
 
-			if (solveNodalSystem()) {
+			if (!solveNodalSystem()) {
 				cout << " Nao foi possivel calcular a analise na frequencia " << frequency << ". Programa abortado." << endl;
 				cout << " Pressione qualquer tecla para fechar..." << endl;
 				cin.get();
@@ -491,9 +501,9 @@ void netlistStructure::freqAnalysis() {
 		}
 	cout << "\n___________________________________________________________________________\n" << endl;
 	cout << " Analise em frequencia realizada com sucesso.\n" << endl;
-	cout << " Deseja salvar o resultado? [Y/N]";
+	cout << " Deseja salvar o resultado? [Y/N] ";
 
-	while( (option != 'Y') || (option != 'N')) {
+	while( (option != 'Y') && (option != 'N')) {
 		cin.get(option);
 	}
 	if(option == 'Y') freqAnalysisToFile(scaleFactor);
