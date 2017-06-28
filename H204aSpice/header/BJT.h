@@ -43,7 +43,7 @@ class BJT : public Component
         unsigned int nodeCollector, nodeBase, nodeEmitter;
         double alfa, alfaR;
         double  IsBe, VtBe, IsBc, VtBc, VA;
-        double  C0be, C1be, C0bc, C1bc;
+        double  CbeR, CbeD, CbcR, CbcD, C0be, C1be, C0bc, C1bc;
 
         double bjt_Vt, bjt_n, bjt_g;
 

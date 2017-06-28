@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 
+
 Component::Component(string netlistLine) : netlistLine(netlistLine)
 {
 

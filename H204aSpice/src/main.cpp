@@ -34,6 +34,7 @@ Por: Marina Torres (marinat94@poli.ufrj.br)
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <string.h>
 
 #include "../header/supportFunctions.h"
 #include "../header/netListStructure.h"
@@ -82,7 +83,7 @@ int main(int argc, char** argv)
 		cin.get();
 
 //	3. OPERATING POINT
-	
+
 	programHeader();
 	cout << "\nAnalisando o circuito...\n\n" << endl;
 
@@ -93,6 +94,7 @@ int main(int argc, char** argv)
 			cout << "___________________________________________\n" << endl;
 			cout << "Ponto de operacao dos transistores:\n" << endl;
 			myCircuit.findOperatingPoint();
+			myCircuit.printNodalSystem();
 
 			cout << "\n___________________________________________\n" << endl;
 			cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
@@ -107,10 +109,11 @@ int main(int argc, char** argv)
 	else {
         myCircuit.buildNodalSystem(0.0);
         myCircuit.solveNodalSystem();
+        myCircuit.printNodalSystem();
+
         cout << " Analise concluida!\n" << endl;
         cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
 		cin.get();
-
 	}
 
 //	4. FREQUENCY ANALYSIS

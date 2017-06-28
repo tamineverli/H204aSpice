@@ -199,15 +199,15 @@
 	<complex>
 	<vector>
 
-1498368201 c:\h204aspice\header\component.h
+1498615327 c:\h204aspice\header\component.h
 	<string>
 	<complex>
 	<vector>
 
-1498016689 source:c:\h204aspice\src\capacitor.cpp
+1498617038 source:c:\h204aspice\src\capacitor.cpp
 	"../header/Capacitor.h"
 
-1498016697 c:\h204aspice\header\capacitor.h
+1498613748 c:\h204aspice\header\capacitor.h
 	<SimpleComponent.h>
 	<string>
 	<complex>
@@ -219,7 +219,7 @@
 	<complex>
 	<vector>
 
-1498332388 source:c:\h204aspice\src\component.cpp
+1498616332 source:c:\h204aspice\src\component.cpp
 	"../header/Component.h"
 	<math.h>
 	<iostream>
@@ -261,7 +261,7 @@
 	<complex>
 	<vector>
 
-1498016943 source:c:\h204aspice\src\currentsrc.cpp
+1498597291 source:c:\h204aspice\src\currentsrc.cpp
 	"CurrentSrc.h"
 
 1498016952 c:\h204aspice\header\currentsrc.h
@@ -280,16 +280,17 @@
 	"IndependentSource.h"
 	<iostream>
 
-1498017039 source:c:\h204aspice\src\inductor.cpp
+1498591280 source:c:\h204aspice\src\inductor.cpp
 	"../header/Inductor.h"
 
-1498446256 source:c:\h204aspice\src\main.cpp
+1498617472 source:c:\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
 	<iomanip>
 	<string>
 	<vector>
+	<string.h>
 	"../header/supportFunctions.h"
 	"../header/netListStructure.h"
 
@@ -298,13 +299,13 @@
 	<stdlib.h>
 	<string>
 
-1498445718 c:\h204aspice\header\netliststructure.h
+1498617501 c:\h204aspice\header\netliststructure.h
 	<string>
 	<complex>
 	<vector>
 	"Component.h"
 
-1498536759 source:c:\h204aspice\src\netliststructure.cpp
+1498589513 source:c:\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
 	"../header/Capacitor.h"
@@ -321,6 +322,7 @@
 	<iomanip>
 	<math.h>
 	<string>
+	<string.h>
 	<vector>
 	<sstream>
 
@@ -349,11 +351,11 @@
 1498017105 source:c:\h204aspice\src\voltagesrc.cpp
 	"VoltageSrc.h"
 
-1498433432 source:c:\h204aspice\src\bjt.cpp
+1498616958 source:c:\h204aspice\src\bjt.cpp
 	"BJT.h"
 	<iostream>
 
-1498422139 c:\h204aspice\header\bjt.h
+1498612368 c:\h204aspice\header\bjt.h
 	<Component.h>
 	<cmath>
 	<string>

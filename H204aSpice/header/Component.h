@@ -5,6 +5,8 @@
 #include <complex>
 #include <vector>
 
+#define CAPACITIVE_ADMITTANCE_DC 1e-9
+
 using namespace std;
 
 typedef complex<double> Complex;

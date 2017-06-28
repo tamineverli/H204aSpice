@@ -17,6 +17,8 @@ class netlistStructure
         void buildNodalSystem(const double frequency);
         //Solve the nodal system matrix
         int solveNodalSystem();
+		//Print nodal system
+        void printNodalSystem();
         //Compute BJT tensions using Newton Raphson method
         int newtonRaphson();
         //Find operating point for all transistors
@@ -42,7 +44,7 @@ class netlistStructure
 
 		string netlistFilePath, stepType;
 		unsigned int numNodes, numTotalNodes, solutionIndex;
-		double frequencyPoints, inicialFrequency, finalFrequency;	
+		double frequencyPoints, inicialFrequency, finalFrequency;
 		bool hasBJT, validCommandLine, isElementNetlistShared;
 
 };

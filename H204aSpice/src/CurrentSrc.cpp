@@ -14,6 +14,8 @@ void CurrentSrc::setTemplate(ComplexVector &nodalSystem) {
 
 	nodalSystem[node1][nodalSystem.size()] += (-1.0)*current;
 	nodalSystem[node2][nodalSystem.size()] += current;
+
+
 }
 
 CurrentSrc::~CurrentSrc() {

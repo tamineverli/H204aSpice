@@ -15,10 +15,11 @@
 #include <iomanip>
 #include <math.h>
 #include <string>
+#include <string.h>
 #include <vector>
 #include <sstream>
 
-#define MIN_ERROR_THRESHOLD 1e-9
+#define MIN_ERROR_THRESHOLD 1e-12
 #define NEWTON_RAP_MAX_ITERATIONS 200
 #define NEWTON_RAP_MAX_RAND 100
 #define NEWTON_RAP_STEP 0.05
@@ -271,11 +272,28 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 
 	Component::setFrequency(frequency);
 
+	//LAMBANCA
+	char buf[1000],tmp[1000];
+
 	//Initialize nodal system matrix with zeros - line and column [0,0] represent the ground node
 	nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
 
 	for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 		componentNetlist.at(index)->setTemplate(nodalSystem);
+
+		//LAMBANCA DELICIA 1
+	      printf("Sistema após a estampa de %s (f=%lg)\n", componentNetlist.at(index)->name, frequency);
+	      for (int k=1; k<=numTotalNodes; k++) {
+	        strcpy(buf,"");
+	        for (int j=1; j<=numTotalNodes+1; j++) {
+	          if (abs(nodalSystem[k][j])!=0) sprintf(tmp,"%+6.2e%+6.2ei ",real(nodalSystem[k][j]),imag(nodalSystem[k][j]));
+	          else sprintf(tmp,"......... ......... ");
+	          strcat(buf,tmp);
+	        }
+	        cout << endl;
+	        printf(buf);
+	      }
+
 	}
 }
 
@@ -357,7 +375,11 @@ int netlistStructure::newtonRaphson() {
 
 			//Compare new solution with solution from previous iteration
 			for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-				if (fabs(nodalSolutionVector[index] - nodalSystem[index][numTotalNodes+1]) > MAX_ERROR) {
+
+				// (current solution - previous solution)/previous solution
+				if ( abs( (nodalSolutionVector[index] - nodalSystem[index][numTotalNodes+1])
+							/ nodalSystem[index][numTotalNodes+1]) > MAX_ERROR ) {
+
 					converged = false;
 					++countIterations;
 				}
@@ -392,13 +414,13 @@ int netlistStructure::newtonRaphson() {
 			for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 
 	            //If component is BJT, update Vbc, Vbe and Vce
-				if (componentNetlist.at(index)->type == 'Q') {
+				if (componentNetlist.at(index)->type == 'Q' || 'q') {
 					tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
 					//tempBJT->setTerminalVoltages(nodalSolutionVector);
 
-					tempBJT->Vbc = abs(nodalSolutionVector[tempBJT->nodeBase]) - abs(nodalSolutionVector[tempBJT->nodeCollector]);
-					tempBJT->Vbe = abs(nodalSolutionVector[tempBJT->nodeBase]) - abs(nodalSolutionVector[tempBJT->nodeEmitter]);
-					tempBJT->Vce = abs(nodalSolutionVector[tempBJT->nodeCollector]) - abs(nodalSolutionVector[tempBJT->nodeEmitter]);
+					tempBJT->Vbc = abs(nodalSolutionVector[tempBJT->nodeBase] - nodalSolutionVector[tempBJT->nodeCollector]);
+					tempBJT->Vbe = abs(nodalSolutionVector[tempBJT->nodeBase] - nodalSolutionVector[tempBJT->nodeEmitter]);
+					tempBJT->Vce = abs(nodalSolutionVector[tempBJT->nodeCollector] - nodalSolutionVector[tempBJT->nodeEmitter]);
 				}
 			}
 			tempBJT = NULL;
@@ -418,7 +440,7 @@ void netlistStructure::findOperatingPoint() {
 		//Search for every BJT in the netlist
 		for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 
-			if (componentNetlist.at(index)->type == 'Q') {
+			if (componentNetlist.at(index)->type == 'Q' || 'q') {
 
 				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
 
@@ -436,6 +458,28 @@ void netlistStructure::findOperatingPoint() {
 	}
 }
 
+//Print nodal system
+void netlistStructure::printNodalSystem() {
+
+	char buf[1000],tmp[1000];
+
+    printf("\n Sistema resolvido:\n");
+
+		for (unsigned int k = 1; k <= numTotalNodes; k++) {
+
+		  strcpy(buf,"");
+
+		  for (unsigned int j=1; j <= numTotalNodes + 1; j++) {
+
+			if (abs(nodalSystem[k][j]) != 0) sprintf( tmp, "%+6.2f ", nodalSystem[k][j]);
+			else sprintf(tmp,"...... ");
+			strcat(buf,tmp);
+		  }
+		  cout << endl;
+		  printf(buf);
+		}
+}
+
 //Perform frequency analysis
 void netlistStructure::freqAnalysis() {
 
@@ -444,14 +488,17 @@ void netlistStructure::freqAnalysis() {
 
 	//1. Define scale factor
 		if (stepType == "LIN") {
-			step = ceil((finalFrequency - inicialFrequency)/(frequencyPoints - 1));
+			//step = ceil((finalFrequency - inicialFrequency)/(frequencyPoints - 1));
+			step = (finalFrequency - inicialFrequency)/(frequencyPoints - 1);
 			scaleFactor = step/inicialFrequency + 1;
 		}
 		else if (stepType == "DEC") {
-			scaleFactor = pow(10.0, (1/(frequencyPoints - 1)));
+			//scaleFactor = pow(10.0, (1/(frequencyPoints - 1)));
+			scaleFactor = pow(10.0, (1.0/(frequencyPoints - 1)));
 		}
 		else if (stepType == "OCT") {
-			scaleFactor = pow(2.0, (1/(frequencyPoints - 1)));
+			//scaleFactor = pow(2.0, (1/(frequencyPoints - 1)));
+			scaleFactor = pow(2.0, (1.0/(frequencyPoints - 1)));
 		}
 
 	//2. Write the header row of the output table, containing frequency, voltage and current identifiers
