@@ -97,6 +97,7 @@ int main(int argc, char** argv)
 			myCircuit.printNodalSystem();
 
 			cout << "\n___________________________________________\n" << endl;
+			cout << " Analise concluida!\n" << endl;
 			cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
 			cin.get();
 
@@ -111,6 +112,7 @@ int main(int argc, char** argv)
         myCircuit.solveNodalSystem();
         myCircuit.printNodalSystem();
 
+    	cout << "\n___________________________________________\n" << endl;
         cout << " Analise concluida!\n" << endl;
         cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
 		cin.get();
@@ -121,8 +123,8 @@ int main(int argc, char** argv)
 		cout << "\n Iniciando analise em frequencia...\n\n" << endl;
 		myCircuit.freqAnalysis();
 
-		cout << "\n___________________________________________\n" << endl;
-		cout << " Obrigado por utilizar o H204a Spice!\n" << endl;
+		programHeader();
+		cout << "\n Obrigado por utilizar o H204a Spice!\n" << endl;
 		cout << " Pressione qualquer tecla para sair..." << endl;
 		cin.get();
 

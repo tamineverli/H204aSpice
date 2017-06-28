@@ -123,7 +123,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 						break;
 
 				//BJT
-					case('Q' || 'q'):
+					case('Q'):
 						newComponent = new BJT(fileLine);
 						hasBJT = true;
 						break;
@@ -281,8 +281,10 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 	for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 		componentNetlist.at(index)->setTemplate(nodalSystem);
 
+		/*
 		//LAMBANCA DELICIA 1
-	      printf("Sistema após a estampa de %s (f=%lg)\n", componentNetlist.at(index)->name, frequency);
+	      cout << "Sistema apos a estampa de " << componentNetlist.at(index)->name;
+	      cout << " (" << frequency << ") " << endl;
 	      for (int k=1; k<=numTotalNodes; k++) {
 	        strcpy(buf,"");
 	        for (int j=1; j<=numTotalNodes+1; j++) {
@@ -293,7 +295,7 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 	        cout << endl;
 	        printf(buf);
 	      }
-
+*/
 	}
 }
 
@@ -488,17 +490,13 @@ void netlistStructure::freqAnalysis() {
 
 	//1. Define scale factor
 		if (stepType == "LIN") {
-			//step = ceil((finalFrequency - inicialFrequency)/(frequencyPoints - 1));
 			step = (finalFrequency - inicialFrequency)/(frequencyPoints - 1);
-			scaleFactor = step/inicialFrequency + 1;
 		}
 		else if (stepType == "DEC") {
-			//scaleFactor = pow(10.0, (1/(frequencyPoints - 1)));
-			scaleFactor = pow(10.0, (1.0/(frequencyPoints - 1)));
+			scaleFactor = pow(10, (1.0/(frequencyPoints - 1)));
 		}
 		else if (stepType == "OCT") {
-			//scaleFactor = pow(2.0, (1/(frequencyPoints - 1)));
-			scaleFactor = pow(2.0, (1.0/(frequencyPoints - 1)));
+			scaleFactor = pow(2, (1.0/(frequencyPoints - 1)));
 		}
 
 	//2. Write the header row of the output table, containing frequency, voltage and current identifiers
@@ -517,9 +515,11 @@ void netlistStructure::freqAnalysis() {
 
 		cout << endl;
 
-
 	//3. Build and solve the system for a range of frequencies
-		for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
+
+		frequency = inicialFrequency;
+
+		while (frequency <= finalFrequency) {
 
 			buildNodalSystem(2*PI*frequency);
 
@@ -540,11 +540,11 @@ void netlistStructure::freqAnalysis() {
 			}
 			cout << endl; //this line is done!
 
-			//Set step for next iteration
+			//Set frequency for next iteration
 			if (stepType == "LIN")
-				scaleFactor = step/frequency + 1;
+				frequency += step;
 			else
-				step = frequency*(scaleFactor - 1);
+				frequency *= scaleFactor;
 		}
 	cout << "\n___________________________________________________________________________\n" << endl;
 	cout << " Analise em frequencia realizada com sucesso.\n" << endl;
@@ -612,7 +612,9 @@ void netlistStructure::freqAnalysisToFile(double scaleFactor) {
 		}
 
 	outputFile.close();
-	cout << " Arquivo gravado com sucesso. \n Pressione qualquer tecla para continuar..." << outputFileName << "'." << endl;
+
+	cout << "\n Arquivo gravado com sucesso em:\n" << outputFileName << endl;
+	cout << " Pressione qualquer tecla para continuar...";
 	cin.get();
 }
 

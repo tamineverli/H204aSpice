@@ -34,6 +34,16 @@ BJT::BJT(string netlistLine) : Component(netlistLine) {
     }
 }
 
+void BJT::print() {
+
+	Component::print();
+
+	cout << " BJT Type: " << bjt_type << endl;
+	cout << " Collector Node: " << nodeCollector << endl;
+	cout << " Base Node: " << nodeBase << endl;
+	cout << " Emitter Node: " << nodeEmitter << endl << endl;
+
+}
 
 
 //1. Methods to compute the parameters of the linear model needed to set the templates

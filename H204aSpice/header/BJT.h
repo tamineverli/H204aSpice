@@ -15,6 +15,7 @@ class BJT : public Component
     public:
         BJT(string netlistLine);
         virtual void setTemplate(ComplexVector &nodalSystem);
+        virtual void print();
 
         //Set and Get methods for Vbc, Vbe and Vce
         //void setTerminalVoltages(ComplexVector &nodalSolutionVector);

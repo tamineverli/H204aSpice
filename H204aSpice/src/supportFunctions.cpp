@@ -9,7 +9,7 @@ void welcomeHeader() {
     system("cls");	//Cleans the console
 
 	cout << "\nH204a Spice, um trabalho de Circuitos Eletricos II\n" << endl;
-	cout << "Versao: 1.1 - lancada em 20.06.2017\n\n" << endl;
+	cout << "Versao: 1.4 - lancada em 28.06.2017\n\n" << endl;
 
 	cout << "Organizacao: " << endl;
 	cout << "Universidade Federal do Rio de Janeiro\n" << endl;
