@@ -24,7 +24,7 @@
 #define NEWTON_RAP_MAX_RAND 100
 #define NEWTON_RAP_STEP 0.05
 #define MAX_ERROR_ABSOLUTE 1e-11
-#define MAX_ERROR 0.005
+#define MAX_ERROR 1e-9
 #define PI 3.14159265359
 
 
@@ -69,12 +69,12 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 					case 'R':   //resistor
 					newComponent = new Resistor(fileLine);
 					break;
-					
+
 					case 'L':   //inductor
 					newComponent = new Inductor(fileLine);
 					setExtraNode = true;
 					break;
-					
+
 					case 'C':   //capacitor
 					newComponent = new Capacitor(fileLine);
 					break;
@@ -83,7 +83,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		            case 'I':   //current source
 		            newComponent = new CurrentSrc(fileLine);
 		            break;
-					
+
 					case 'V':   //voltage source
 					newComponent = new VoltageSrc(fileLine);
 					setExtraNode = true;
@@ -100,16 +100,16 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 					newComponent = new Voltage_to_Voltage(fileLine);
 					setExtraNode = true;
 					break;
-					
+
 					case 'F':	//Current_to_Current
 					newComponent = new Current_to_Current(fileLine);
 					setExtraNode = true;
 					break;
-					
+
 					case 'G':	//Voltage_to_Current (transconductance)
 					newComponent = new Voltage_to_Current(fileLine);
 					break;
-					
+
 					case 'H':	//Current_to_Voltage (transresistance)
 					newComponent = new Current_to_Voltage(fileLine);
 					setExtraNode = true;
@@ -589,13 +589,13 @@ void netlistStructure::freqAnalysis() {
 		while( (option != 'Y') && (option != 'N')) {
 			cin.get(option);
 		}
-		if(option == 'Y') freqAnalysisToFile(scaleFactor);
+		if(option == 'Y') freqAnalysisToFile(step, scaleFactor);
 	}
 
 //
-	void netlistStructure::freqAnalysisToFile(double scaleFactor) {
+	void netlistStructure::freqAnalysisToFile(double step, double scaleFactor) {
 
-		double frequency, step;
+		double frequency;
 
 		string outputFileName;
 		ofstream outputFile;
@@ -613,7 +613,7 @@ void netlistStructure::freqAnalysis() {
 
 	//1. Write the header of the output table, containing frequency, voltage and current identifiers
 
-		outputFile << "F";
+		outputFile << "f";
 
 		for (unsigned int index = 0; index < numNodes; ++index) {
 			outputFile << " " << (index + 1) << "m " << (index + 1) << "f";
@@ -626,25 +626,25 @@ void netlistStructure::freqAnalysis() {
 		outputFile << endl;
 
 	//3. Write the output for a range of frequencies
-		for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
+		for (frequency = inicialFrequency; frequency <= finalFrequency; ) {
 
 			buildNodalSystem(2*PI*frequency, previousSolutionVector);
 			solveNodalSystem(); //no need to test if solution is right, as we did it before
 
-			outputFile << scientific << setprecision(4) << abs(nodalSolutionVector.at(0));
+			outputFile << scientific << setprecision(10) << frequency;
 
 			for (unsigned int column = 1; column < nodalSolutionVector.size(); ++column) {
-				outputFile << " " << scientific << setprecision(5) << abs(nodalSolutionVector.at(column))
-				<< " " << fixed << setprecision(3) << arg(nodalSolutionVector.at(column))*(180/PI);
+				outputFile << " " << scientific << setprecision(15) << abs(nodalSolutionVector.at(column))
+				<< " " << fixed << setprecision(15) << arg(nodalSolutionVector.at(column))*(180/PI);
 			}
 
 			outputFile << endl;
 
 			//Set step for next iteration
 			if (stepType == "LIN")
-				scaleFactor = step/frequency + 1;
+				frequency += step;
 			else
-				step = frequency*(scaleFactor - 1);
+				frequency *= scaleFactor;
 		}
 
 		outputFile.close();

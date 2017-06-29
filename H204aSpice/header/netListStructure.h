@@ -26,7 +26,7 @@ class netlistStructure
 		//Perform frequency analysis onscreen
 		void freqAnalysis();
 		//Frequency analysis output to file
-		void freqAnalysisToFile(double scaleFactor);
+		void freqAnalysisToFile(double step, double scaleFactor);
 		ofstream estampaLogFile;
 
 

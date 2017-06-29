@@ -302,13 +302,13 @@
 	<stdlib.h>
 	<string>
 
-1498767627 c:\h204aspice\header\netliststructure.h
+1498771946 c:\h204aspice\header\netliststructure.h
 	<string>
 	<complex>
 	<vector>
 	"Component.h"
 
-1498769982 source:c:\h204aspice\src\netliststructure.cpp
+1498774793 source:c:\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
 	"../header/Capacitor.h"
@@ -354,11 +354,11 @@
 1498691959 source:c:\h204aspice\src\voltagesrc.cpp
 	"VoltageSrc.h"
 
-1498770055 source:c:\h204aspice\src\bjt.cpp
+1498777818 source:c:\h204aspice\src\bjt.cpp
 	"BJT.h"
 	<iostream>
 
-1498701914 c:\h204aspice\header\bjt.h
+1498777853 c:\h204aspice\header\bjt.h
 	<Component.h>
 	<cmath>
 	<string>
