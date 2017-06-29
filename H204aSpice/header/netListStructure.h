@@ -27,6 +27,10 @@ class netlistStructure
 		void freqAnalysis();
 		//Frequency analysis output to file
 		void freqAnalysisToFile(double scaleFactor);
+		ofstream estampaLogFile;
+
+
+		void printOutputToFile(std::vector<std::complex<double>>);
 
         virtual ~netlistStructure();
 
@@ -49,6 +53,8 @@ class netlistStructure
 		unsigned int numNodes, numTotalNodes, solutionIndex;
 		double frequencyPoints, inicialFrequency, finalFrequency;
 		bool hasBJT, validCommandLine, isElementNetlistShared;
+
+		ofstream logFile;
 
 };
 
