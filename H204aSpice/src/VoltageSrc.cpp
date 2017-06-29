@@ -3,7 +3,7 @@
 VoltageSrc::VoltageSrc(string netlistLine) : IndependentSource(netlistLine) {
 }
 
-void VoltageSrc::setTemplate(ComplexVector &nodalSystem) {
+void VoltageSrc::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	Complex voltage;
 

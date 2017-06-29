@@ -14,7 +14,7 @@ class BJT : public Component
 {
     public:
         BJT(string netlistLine);
-        virtual void setTemplate(ComplexVector &nodalSystem);
+        virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector);
         virtual void print();
 
         //Set and Get methods for Vbc, Vbe and Vce
@@ -49,7 +49,9 @@ class BJT : public Component
         double bjt_Vt, bjt_n, bjt_g;
 
         double GC, GE, IC, IE;
-        double Vbc, Vbe, Vce;
+        double Vbc, Vbe, Vce, vbcAux, vbeAux;
+
+        bool lambanca;
 
 };
 

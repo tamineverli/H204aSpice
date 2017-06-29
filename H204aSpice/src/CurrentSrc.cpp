@@ -3,7 +3,7 @@
 CurrentSrc::CurrentSrc(string netlistLine) : IndependentSource(netlistLine) {
 }
 
-void CurrentSrc::setTemplate(ComplexVector &nodalSystem) {
+void CurrentSrc::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	Complex current;
 

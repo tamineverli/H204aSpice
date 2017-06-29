@@ -19,7 +19,7 @@ class Component
 
 		static void setFrequency(const double newfrequency);
 		static double getFrequency();
-		virtual void setTemplate(ComplexVector &nodalSystem) = 0;
+		virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) = 0;
 		virtual void print();
 		virtual ~Component();
 

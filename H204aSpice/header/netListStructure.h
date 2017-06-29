@@ -14,7 +14,7 @@ class netlistStructure
         //Set frequency analysis parameters according to a command line
         void setCommandLineParameters(string commandLine);
         //Build nodal system for a given frequency
-        void buildNodalSystem(const double frequency);
+        void buildNodalSystem(const double frequency, vector<Complex> &previousSolutionVector);
         //Solve the nodal system matrix
         int solveNodalSystem();
 		//Print nodal system
@@ -41,6 +41,9 @@ class netlistStructure
 
 		// Solution vector, used in the end to write the output file
 		vector<Complex> nodalSolutionVector;
+
+		// Solution vector, used in the end to write the output file
+		vector<Complex> previousSolutionVector;
 
 		string netlistFilePath, stepType;
 		unsigned int numNodes, numTotalNodes, solutionIndex;

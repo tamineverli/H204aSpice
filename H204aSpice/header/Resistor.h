@@ -11,7 +11,7 @@ class Resistor : public SimpleComponent {
 
 	public:
 		Resistor(string netlistLine);
-		virtual void setTemplate(ComplexVector &nodalSystem);
+		virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector);
 		virtual ~Resistor();
 };
 

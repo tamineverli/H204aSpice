@@ -37,7 +37,7 @@ void CoupledInductors::locateInductors(vector< Component *> &componentNetlist) {
 	tempInductor = NULL;
 }
 
-void CoupledInductors::setTemplate(ComplexVector &nodalSystem) {
+void CoupledInductors::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	mutualInductance = Complex(0.0, frequency*k*sqrt(L1*L2));
 

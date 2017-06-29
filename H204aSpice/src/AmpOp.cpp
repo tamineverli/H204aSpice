@@ -15,7 +15,7 @@ AmpOp::AmpOp(string netlistLine) : Component(netlistLine) {
 	in >> out_positive >> out_negative >> in_positive >> in_negative;
 }
 
-void AmpOp::setTemplate(ComplexVector &nodalSystem) {
+void AmpOp::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	nodalSystem[out_positive][extraNode] += 1.0;
 	nodalSystem[out_negative][extraNode] += -1.0;

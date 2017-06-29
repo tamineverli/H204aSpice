@@ -14,7 +14,7 @@ using namespace std;
 	Voltage_to_Voltage::Voltage_to_Voltage(string netlistLine) : ControlledSource(netlistLine) {
 	}
 
-	void Voltage_to_Voltage::setTemplate(ComplexVector &nodalSystem) {
+	void Voltage_to_Voltage::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 		nodalSystem[node1][extraNode] += 1.0;
 		nodalSystem[node2][extraNode] += -1.0;
@@ -32,7 +32,7 @@ using namespace std;
 	Current_to_Current::Current_to_Current(string netlistLine) : ControlledSource(netlistLine) {
 	}
 
-	void Current_to_Current::setTemplate(ComplexVector &nodalSystem) {
+	void Current_to_Current::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 		nodalSystem[node1][extraNode] += gain;
 		nodalSystem[node2][extraNode] += (-1.0)*gain;
@@ -50,7 +50,7 @@ using namespace std;
 	Voltage_to_Current::Voltage_to_Current(string netlistLine) : ControlledSource(netlistLine) {
 	}
 
-	void Voltage_to_Current::setTemplate(ComplexVector &nodalSystem) {
+	void Voltage_to_Current::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 		nodalSystem[node1][referenceNode1] += gain;
 		nodalSystem[node1][referenceNode2] += (-1.0)*gain;
@@ -65,7 +65,7 @@ using namespace std;
 	Current_to_Voltage::Current_to_Voltage(string netlistLine) : ControlledSource(netlistLine) {
 	}
 
-	void Current_to_Voltage::setTemplate(ComplexVector &nodalSystem) {
+	void Current_to_Voltage::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 		nodalSystem[node1][extraNode2] += 1.0;
 		nodalSystem[node2][extraNode2] += -1.0;

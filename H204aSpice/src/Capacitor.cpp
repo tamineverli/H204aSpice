@@ -3,7 +3,7 @@
 Capacitor::Capacitor(string netlistLine) : SimpleComponent(netlistLine) {
 }
 
-void Capacitor::setTemplate(ComplexVector &nodalSystem) {
+void Capacitor::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	if (frequency > 0) {
 		capacitiveAdmittance = Complex(0.0, frequency*value);

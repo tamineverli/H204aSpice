@@ -15,7 +15,7 @@ class CoupledInductors : public Component
 
     	//Find L1 and L2 and compute the mutual inductance
 		void locateInductors(vector< Component *> &nodalSystem);
-		virtual void setTemplate(ComplexVector &nodalSystem);
+		virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector);
 		virtual void print();
 		virtual ~CoupledInductors();
 

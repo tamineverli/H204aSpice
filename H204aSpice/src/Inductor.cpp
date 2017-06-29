@@ -3,7 +3,7 @@
 Inductor::Inductor(string netlistLine) : SimpleComponent(netlistLine) {
 }
 
-void Inductor::setTemplate(ComplexVector &nodalSystem) {
+void Inductor::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	if (frequency > 0) {
 		inductiveReactance = Complex(0.0, frequency*value);

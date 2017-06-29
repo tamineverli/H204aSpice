@@ -11,7 +11,7 @@ class VoltageSrc : public IndependentSource
 {
     public:
         VoltageSrc( string netlistLine);
-		virtual void setTemplate(ComplexVector &nodalSystem);
+		virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector);
 		virtual ~VoltageSrc();
 };
 

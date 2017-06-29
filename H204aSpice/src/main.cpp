@@ -1,9 +1,9 @@
 /*
 Universidade Federal do Rio de Janeiro
-Departamento de Engenharia Eletrônica
+Departamento de Engenharia EletrÃ´nica
 
 Programa que analisa circuitos lineares contendo transistores bipolares, encontrando o ponto de
-operação e a resposta em frequência para pequenos sinais
+operaÃ§Ã£o e a resposta em frequÃªncia para pequenos sinais
 
 Por: Marina Torres (marinat94@poli.ufrj.br)
      Tamine Verli (tamine.verli@poli.ufrj.br)
@@ -33,6 +33,7 @@ Por: Marina Torres (marinat94@poli.ufrj.br)
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <complex>
 #include <vector>
 #include <string.h>
 
@@ -108,7 +109,8 @@ int main(int argc, char** argv)
 		}
 	}
 	else {
-        myCircuit.buildNodalSystem(0.0);
+
+        myCircuit.buildNodalSystem(0.0, myCircuit.previousSolutionVector);
         myCircuit.solveNodalSystem();
         myCircuit.printNodalSystem();
 

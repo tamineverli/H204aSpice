@@ -23,7 +23,8 @@
 #define NEWTON_RAP_MAX_ITERATIONS 200
 #define NEWTON_RAP_MAX_RAND 100
 #define NEWTON_RAP_STEP 0.05
-#define MAX_ERROR 0.05
+#define MAX_ERROR_ABSOLUTE 1e-11
+#define MAX_ERROR 0.005
 #define PI 3.14159265359
 
 
@@ -196,7 +197,7 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 	//	4 . SET NODAL SYSTEM
 
 		//Allocate memory for the output matrix - first line stores frequency values
-		nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.0);
+		nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.1);
 
 }
 
@@ -266,9 +267,8 @@ void netlistStructure::setCommandLineParameters(string commandLine) {
 	return;
 }
 
-
 //Build nodal system for a given frequency
-void netlistStructure::buildNodalSystem(const double frequency) {
+void netlistStructure::buildNodalSystem(const double frequency, vector<Complex> &previousSolutionVector) {
 
 	Component::setFrequency(frequency);
 
@@ -279,11 +279,11 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 	nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
 
 	for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
-		componentNetlist.at(index)->setTemplate(nodalSystem);
+		componentNetlist.at(index)->setTemplate(nodalSystem, previousSolutionVector);
 
-		/*
+	
 		//LAMBANCA DELICIA 1
-	      cout << "Sistema apos a estampa de " << componentNetlist.at(index)->name;
+	      cout << "\nSistema apos a estampa de " << componentNetlist.at(index)->name;
 	      cout << " (" << frequency << ") " << endl;
 	      for (int k=1; k<=numTotalNodes; k++) {
 	        strcpy(buf,"");
@@ -295,7 +295,7 @@ void netlistStructure::buildNodalSystem(const double frequency) {
 	        cout << endl;
 	        printf(buf);
 	      }
-*/
+
 	}
 }
 
@@ -346,7 +346,7 @@ int netlistStructure::solveNodalSystem() {
 	}
 
 	// The first element of each line of the nodalSolutionVector is the frequency
-	nodalSolutionVector.at(0) = Component::getFrequency()/(2*PI);
+	//nodalSolutionVector.at(0) = Component::getFrequency()/(2*PI);
 
 	// Writes the solution to the nodalSolutionVector to be writen to the output file later
 	for (i = 1; i < nodalSolutionVector.capacity(); ++i) {
@@ -361,7 +361,9 @@ int netlistStructure::newtonRaphson() {
 	srand(time(0));
 
 	//Initialize solution vector with zeros
-	nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.0);
+	previousSolutionVector = vector< Complex > (numTotalNodes + 1, 0.1);
+
+	previousSolutionVector[0] = 0.0;
 
 	bool converged = false;
 	unsigned int countIterations = 0;
@@ -370,53 +372,50 @@ int netlistStructure::newtonRaphson() {
     while(!converged) {
 
 		//1. Build and solve the nodal system
-			buildNodalSystem(0.0);
+			buildNodalSystem(0.0, previousSolutionVector);
 			if(!solveNodalSystem()) return(0);
 
-			converged = true;
+			//Reset solution vector with ramdom values if maximum number of iterations is reached
+			if( (countIterations == NEWTON_RAP_MAX_ITERATIONS) && (countRandomizations < NEWTON_RAP_MAX_RAND)) {
 
-			//Compare new solution with solution from previous iteration
-			for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-
-				// (current solution - previous solution)/previous solution
-				if ( abs( (nodalSolutionVector[index] - nodalSystem[index][numTotalNodes+1])
-							/ nodalSystem[index][numTotalNodes+1]) > MAX_ERROR ) {
-
-					converged = false;
-					++countIterations;
+				for (unsigned int index = 1; index <= numTotalNodes; ++index) {
+					nodalSolutionVector[index]=((rand()%100)/100.0);
+					++countRandomizations;
+					countIterations = 0;
 				}
+
+			//Close program in case maximum number of randomizations is reached
+			} else if(countRandomizations == NEWTON_RAP_MAX_RAND) {
+				return(0);
 			}
 
-		//2. If solution has not converged
-			if(!converged) {
+			nodalSolutionVector[0] = 0;
+            converged = true;
+            //Compare new solution with solution from previous iteration
+            for (unsigned int index = 1; index <= numTotalNodes; ++index) {
 
-				//Reset solution vector with ramdom values if maximum number of iterations is reached
-				if( (countIterations == NEWTON_RAP_MAX_ITERATIONS) && (countRandomizations < NEWTON_RAP_MAX_RAND)) {
+                //debug
+                cout << "\nAntiga: " << previousSolutionVector[index] << " Atual: " << nodalSolutionVector[index] << endl;
 
-					for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-						nodalSolutionVector[index]=((rand()%100)/100.0);
-						++countRandomizations;
-						countIterations=0;
-					}
+                // (current solution - previous solution) / previous solution
+                if (abs( (previousSolutionVector[index] - nodalSolutionVector[index])
+                            / previousSolutionVector[index]) > MAX_ERROR) {
 
-				//Close program in case maximum number of randomizations is reached
-				} else if(countRandomizations == NEWTON_RAP_MAX_RAND) {
-					return(0);
-
-				//Copy new solution to nodalSolutionVector, for comparison in the next iteration
-				} else {
-					for (unsigned int index = 1; index <= numTotalNodes; ++index) {
-						nodalSolutionVector[index] = nodalSystem[index][numTotalNodes+1];
-					}
-				}
+                //if ( abs( (previousSolutionVector[index] - nodalSolutionVector[index])) > MAX_ERROR_ABSOLUTE ) {
+                    converged = false;
+                    //break;
+                }
 			}
+			//Copy new solution to nodalSolutionVector, for comparison in the next iteration
+
+            
+            previousSolutionVector = nodalSolutionVector;
 
 		//3. Use new solution as input to update Vbc, Vbe and Vce for every BJT in the circuit
 			BJT *tempBJT;
 			for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
-
 	            //If component is BJT, update Vbc, Vbe and Vce
-				if (componentNetlist.at(index)->type == 'Q' || 'q') {
+				if (componentNetlist.at(index)->type == 'Q') {
 					tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
 					//tempBJT->setTerminalVoltages(nodalSolutionVector);
 
@@ -426,6 +425,9 @@ int netlistStructure::newtonRaphson() {
 				}
 			}
 			tempBJT = NULL;
+            ++countIterations;
+            cout << "\nITERACOES: " << countIterations << endl;
+            cout << "\nCOUNT RANDMIZATIONS: " << countRandomizations << endl;
     }
     //If algorithm reaches this point, solution must have converged
     return(1);
@@ -442,7 +444,7 @@ void netlistStructure::findOperatingPoint() {
 		//Search for every BJT in the netlist
 		for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 
-			if (componentNetlist.at(index)->type == 'Q' || 'q') {
+			if (componentNetlist.at(index)->type == 'Q') {
 
 				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
 
@@ -521,7 +523,7 @@ void netlistStructure::freqAnalysis() {
 
 		while (frequency <= finalFrequency) {
 
-			buildNodalSystem(2*PI*frequency);
+			buildNodalSystem(2*PI*frequency, previousSolutionVector);
 
 			if (!solveNodalSystem()) {
 				cout << " Nao foi possivel calcular a analise na frequencia " << frequency << ". Programa abortado." << endl;
@@ -592,7 +594,7 @@ void netlistStructure::freqAnalysisToFile(double scaleFactor) {
 	//3. Write the output for a range of frequencies
 		for (frequency = inicialFrequency; frequency <= finalFrequency; frequency += step) {
 
-			buildNodalSystem(2*PI*frequency);
+			buildNodalSystem(2*PI*frequency, previousSolutionVector);
 			solveNodalSystem(); //no need to test if solution is right, as we did it before
 
 			outputFile << scientific << setprecision(4) << abs(nodalSolutionVector.at(0));

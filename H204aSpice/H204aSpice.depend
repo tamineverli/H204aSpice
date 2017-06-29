@@ -189,31 +189,31 @@
 	<complex>
 	<vector>
 
-1498356745 source:c:\h204aspice\src\ampop.cpp
+1498691851 source:c:\h204aspice\src\ampop.cpp
 	"../header/AmpOp.h"
 	<iostream>
 
-1498354134 c:\h204aspice\header\ampop.h
+1498692002 c:\h204aspice\header\ampop.h
 	<Component.h>
 	<string>
 	<complex>
 	<vector>
 
-1498615327 c:\h204aspice\header\component.h
+1498692905 c:\h204aspice\header\component.h
 	<string>
 	<complex>
 	<vector>
 
-1498617038 source:c:\h204aspice\src\capacitor.cpp
+1498691858 source:c:\h204aspice\src\capacitor.cpp
 	"../header/Capacitor.h"
 
-1498613748 c:\h204aspice\header\capacitor.h
+1498691677 c:\h204aspice\header\capacitor.h
 	<SimpleComponent.h>
 	<string>
 	<complex>
 	<vector>
 
-1498354139 c:\h204aspice\header\simplecomponent.h
+1498691799 c:\h204aspice\header\simplecomponent.h
 	<Component.h>
 	<string>
 	<complex>
@@ -229,48 +229,48 @@
 	"ControlledSource.h"
 	<iostream>
 
-1498016846 c:\h204aspice\header\controlledsource.h
+1498691734 c:\h204aspice\header\controlledsource.h
 	<Component.h>
 	<string>
 	<complex>
 	<vector>
 
-1498016579 source:c:\h204aspice\src\controlledsourceimplementations.cpp
+1498691904 source:c:\h204aspice\src\controlledsourceimplementations.cpp
 	"../header/ControlledSourceImplementations.h"
 
-1498016780 c:\h204aspice\header\controlledsourceimplementations.h
+1498691757 c:\h204aspice\header\controlledsourceimplementations.h
 	"ControlledSource.h"
 	<iostream>
 	<stdlib.h>
 	<string>
 
-1498361248 source:c:\h204aspice\src\coupledinductors.cpp
+1498691915 source:c:\h204aspice\src\coupledinductors.cpp
 	"CoupledInductors.h"
 	<iostream>
 
-1498354382 c:\h204aspice\header\coupledinductors.h
+1498691766 c:\h204aspice\header\coupledinductors.h
 	<Component.h>
 	<Inductor.h>
 	<string>
 	<complex>
 	<vector>
 
-1498017016 c:\h204aspice\header\inductor.h
+1498691781 c:\h204aspice\header\inductor.h
 	<SimpleComponent.h>
 	<string>
 	<complex>
 	<vector>
 
-1498597291 source:c:\h204aspice\src\currentsrc.cpp
+1498691920 source:c:\h204aspice\src\currentsrc.cpp
 	"CurrentSrc.h"
 
-1498016952 c:\h204aspice\header\currentsrc.h
+1498691771 c:\h204aspice\header\currentsrc.h
 	<IndependentSource.h>
 	<string>
 	<complex>
 	<vector>
 
-1498016925 c:\h204aspice\header\independentsource.h
+1498691775 c:\h204aspice\header\independentsource.h
 	<Component.h>
 	<string>
 	<complex>
@@ -280,15 +280,16 @@
 	"IndependentSource.h"
 	<iostream>
 
-1498591280 source:c:\h204aspice\src\inductor.cpp
+1498691934 source:c:\h204aspice\src\inductor.cpp
 	"../header/Inductor.h"
 
-1498626419 source:c:\h204aspice\src\main.cpp
+1498692771 source:c:\h204aspice\src\main.cpp
 	<iostream>
 	<stdlib.h>
 	<fstream>
 	<iomanip>
 	<string>
+	<complex>
 	<vector>
 	<string.h>
 	"../header/supportFunctions.h"
@@ -299,13 +300,13 @@
 	<stdlib.h>
 	<string>
 
-1498617501 c:\h204aspice\header\netliststructure.h
+1498692814 c:\h204aspice\header\netliststructure.h
 	<string>
 	<complex>
 	<vector>
 	"Component.h"
 
-1498627229 source:c:\h204aspice\src\netliststructure.cpp
+1498700353 source:c:\h204aspice\src\netliststructure.cpp
 	"../header/netListStructure.h"
 	"../header/Resistor.h"
 	"../header/Capacitor.h"
@@ -326,36 +327,36 @@
 	<vector>
 	<sstream>
 
-1498017044 c:\h204aspice\header\resistor.h
+1498691793 c:\h204aspice\header\resistor.h
 	<SimpleComponent.h>
 	<string>
 	<complex>
 	<vector>
 
-1498017097 c:\h204aspice\header\voltagesrc.h
+1498691808 c:\h204aspice\header\voltagesrc.h
 	<IndependentSource.h>
 	<string>
 	<complex>
 	<vector>
 
-1498017051 source:c:\h204aspice\src\resistor.cpp
+1498691941 source:c:\h204aspice\src\resistor.cpp
 	"../header/Resistor.h"
 
 1498017075 source:c:\h204aspice\src\simplecomponent.cpp
 	"../header/SimpleComponent.h"
 	<iostream>
 
-1498619738 source:c:\h204aspice\src\supportfunctions.cpp
+1498677156 source:c:\h204aspice\src\supportfunctions.cpp
 	"../header/supportFunctions.h"
 
-1498594571 source:c:\h204aspice\src\voltagesrc.cpp
+1498691959 source:c:\h204aspice\src\voltagesrc.cpp
 	"VoltageSrc.h"
 
-1498627405 source:c:\h204aspice\src\bjt.cpp
+1498700620 source:c:\h204aspice\src\bjt.cpp
 	"BJT.h"
 	<iostream>
 
-1498626792 c:\h204aspice\header\bjt.h
+1498696294 c:\h204aspice\header\bjt.h
 	<Component.h>
 	<cmath>
 	<string>

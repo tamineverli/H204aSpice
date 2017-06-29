@@ -3,7 +3,7 @@
 Resistor::Resistor(string netlistLine) : SimpleComponent(netlistLine) {
 }
 
-void Resistor::setTemplate(ComplexVector &nodalSystem) {
+void Resistor::setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) {
 
 	Complex conductance(1.0/value, 0.0);
 

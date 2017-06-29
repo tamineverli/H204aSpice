@@ -12,7 +12,7 @@ class SimpleComponent : public Component {
 	public:
 		SimpleComponent(string netlistLine);
 		
-		virtual void setTemplate(ComplexVector &nodalSystem) = 0;
+		virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector) = 0;
 		virtual void print();
 		virtual ~SimpleComponent();
 
