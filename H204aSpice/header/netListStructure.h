@@ -21,15 +21,14 @@ class netlistStructure
         void printNodalSystem();
         //Compute BJT tensions using Newton Raphson method
         int newtonRaphson();
-        //Find operating point for all transistors
-		void findOperatingPoint();
+        //Print BJT operating point
+		void findBJTOperatingPoint();
 		//Perform frequency analysis onscreen
-		void freqAnalysis();
+		//void freqAnalysis();
 		//Frequency analysis output to file
-		void freqAnalysisToFile(double step, double scaleFactor);
+		void freqAnalysisToFile();
 		ofstream estampaLogFile;
-
-
+		//Used to debug
 		void printOutputToFile(std::vector<std::complex<double>>);
 
         virtual ~netlistStructure();
@@ -40,7 +39,7 @@ class netlistStructure
 		//Vector to support identification of extra nodes
 		vector<string> extraNodeVector;
 
-		// numRows = numNodes; numColumns = numNodes + 1 (the plus one is for the coupled solution vector as the last column)
+		// numRows = numNodes / numColumns = numNodes + 1 (to save the solution)
 		vector < vector<Complex> > nodalSystem;
 
 		// Solution vector, used in the end to write the output file

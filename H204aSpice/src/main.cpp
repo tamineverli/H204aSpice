@@ -27,7 +27,6 @@ Por: Marina Torres (marinat94@poli.ufrj.br)
  * Switch      -  $<name> <node +> <node -> <control node +> <control node -> <limit voltage>
 */
 
-
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
@@ -83,47 +82,48 @@ int main(int argc, char** argv)
 		cout << " Pressione qualquer tecla para continuar..." << endl;
 		cin.get();
 
-//	3. OPERATING POINT
+
+//	3. BUILD AND SOLVE NODAL SYSTEM
 
 	programHeader();
 	cout << "\nAnalisando o circuito...\n\n" << endl;
 
+	//If netlist has BJT we need to run the Newton Raphson algorithm
 	if(myCircuit.hasBJT) {
 
 		if(myCircuit.newtonRaphson()) {
 
-			cout << "___________________________________________\n" << endl;
-			cout << "Ponto de operacao dos transistores:\n" << endl;
-			myCircuit.findOperatingPoint();
-			myCircuit.printNodalSystem();
+			programHeader();
+    		myCircuit.printNodalSystem();
 
-			cout << "\n___________________________________________\n" << endl;
-			cout << " Analise concluida!\n" << endl;
-			cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
+		    cout << " \n\n\n Analise concluida!\n" << endl;
+			cout << " Pressione qualquer tecla para visualizar o ponto de operacao dos transistores..." << endl;
 			cin.get();
+
+			programHeader();
+    		myCircuit.findBJTOperatingPoint();
 
 		} else {
 			cout << "O sistema nodal nao convergiu: ponto de operacao nao encontrado.\n" << endl;
 			cin.get();
 			return(0);
 		}
-	}
-	else {
-
+	} else {
         myCircuit.buildNodalSystem(0.0, myCircuit.previousSolutionVector);
         myCircuit.solveNodalSystem();
-        myCircuit.printNodalSystem();
 
-    	cout << "\n___________________________________________\n" << endl;
-        cout << " Analise concluida!\n" << endl;
-        cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
-		cin.get();
-	}
+        programHeader();
+    	myCircuit.printNodalSystem();
+    }
 
-//	4. FREQUENCY ANALYSIS
+	cout << "\n___________________________________________\n" << endl;
+    cout << " Pressione qualquer tecla para prosseguir para a analise de frequencia..." << endl;
+	cin.get();
+
+//	5. FREQUENCY ANALYSIS
 		programHeader();
 		cout << "\n Iniciando analise em frequencia...\n\n" << endl;
-		myCircuit.freqAnalysis();
+		myCircuit.freqAnalysisToFile();
 
 		programHeader();
 		cout << "\n Obrigado por utilizar o H204a Spice!\n" << endl;

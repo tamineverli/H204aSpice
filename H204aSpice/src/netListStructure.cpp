@@ -67,63 +67,63 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 			    //Simple Components
 					case 'R':   //resistor
-					newComponent = new Resistor(fileLine);
-					break;
+						newComponent = new Resistor(fileLine);
+						break;
 
 					case 'L':   //inductor
-					newComponent = new Inductor(fileLine);
-					setExtraNode = true;
-					break;
+						newComponent = new Inductor(fileLine);
+						setExtraNode = true;
+						break;
 
 					case 'C':   //capacitor
-					newComponent = new Capacitor(fileLine);
-					break;
+						newComponent = new Capacitor(fileLine);
+						break;
 
 	            //Independent Sources
 		            case 'I':   //current source
-		            newComponent = new CurrentSrc(fileLine);
-		            break;
+			            newComponent = new CurrentSrc(fileLine);
+			            break;
 
 					case 'V':   //voltage source
-					newComponent = new VoltageSrc(fileLine);
-					setExtraNode = true;
-					break;
+						newComponent = new VoltageSrc(fileLine);
+						setExtraNode = true;
+						break;
 
 	            //Operational Amplifier
 					case 'O':
-					newComponent = new AmpOp(fileLine);
-					setExtraNode = true;
-					break;
+						newComponent = new AmpOp(fileLine);
+						setExtraNode = true;
+						break;
 
 				//Controlled Sources
 					case 'E':	//Voltage_to_Voltage
-					newComponent = new Voltage_to_Voltage(fileLine);
-					setExtraNode = true;
-					break;
+						newComponent = new Voltage_to_Voltage(fileLine);
+						setExtraNode = true;
+						break;
 
 					case 'F':	//Current_to_Current
-					newComponent = new Current_to_Current(fileLine);
-					setExtraNode = true;
-					break;
+						newComponent = new Current_to_Current(fileLine);
+						setExtraNode = true;
+						break;
 
 					case 'G':	//Voltage_to_Current (transconductance)
-					newComponent = new Voltage_to_Current(fileLine);
-					break;
+						newComponent = new Voltage_to_Current(fileLine);
+						break;
 
 					case 'H':	//Current_to_Voltage (transresistance)
-					newComponent = new Current_to_Voltage(fileLine);
-					setExtraNode = true;
-					break;
+						newComponent = new Current_to_Voltage(fileLine);
+						setExtraNode = true;
+						break;
 
 				//Inductor Coupling
 					case 'K':	//Coupled inductors
-					newComponent = new CoupledInductors(fileLine);
+						newComponent = new CoupledInductors(fileLine);
 
-					CoupledInductors *tempCouple;
+						//Locate coupled inductors in netlist
+						CoupledInductors *tempCouple;
+						tempCouple = dynamic_cast <CoupledInductors *> (newComponent);
 
-					tempCouple = dynamic_cast <CoupledInductors *> (newComponent);
-
-						tempCouple->locateInductors(componentNetlist);	//Locate coupled inductors in netlist
+						tempCouple->locateInductors(componentNetlist);
 						tempCouple->mutualInductance = 0;				//Initialize mutual inductance
 
 						tempCouple = NULL;
@@ -131,84 +131,83 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 
 				//BJT
 						case('Q'):
-						newComponent = new BJT(fileLine);
-						hasBJT = true;
-						break;
+							newComponent = new BJT(fileLine);
+							hasBJT = true;
+							break;
 
 				//Command Line and Comments
 						case '.':
-						setCommandLineParameters(fileLine);
-						validComponent = false;
-						break;
+							setCommandLineParameters(fileLine);
+							validComponent = false;
+							break;
 
-				//Comments
 						case '*':
-						cout << " Comentario: " << fileLine << endl << endl;
-						validComponent = false;
-						break;
+							cout << " Comentario: " << fileLine << endl << endl;
+							validComponent = false;
+							break;
 
 				//Defaut
 						default:
-						cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado...\n" << endl;
-						validComponent = false;
-					}
+							cout << "\nALERTA: elemento invalido identificado no NETLIST.\nComplicado...\n" << endl;
+							validComponent = false;
+			}
 
-					if (validComponent) {
+			if (validComponent) {
 
 				// Add new component to netlist
-						componentNetlist.push_back(newComponent);
-						newComponent->print();
+				componentNetlist.push_back(newComponent);
+				newComponent->print();
 
 				// If the element needs an extra node, initializes the extra node in extraNodeVector vector and in the element itself
-						if (setExtraNode) {
+				if (setExtraNode) {
 
 					// If the element is a Current_to_Voltage controlled source, it needs two extra nodes
-							if (componentType == 'H') {
+					if (componentType == 'H') {
 
-								Current_to_Voltage *tempCurrent_to_Voltage = dynamic_cast <Current_to_Voltage *> (newComponent);
+						Current_to_Voltage *tempCurrent_to_Voltage = dynamic_cast <Current_to_Voltage *> (newComponent);
 
-								extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 1");
-								tempCurrent_to_Voltage->extraNode = numNodes + extraNodeVector.size();
+						extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 1");
+						tempCurrent_to_Voltage->extraNode = numNodes + extraNodeVector.size();
 
-								extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 2");
-								tempCurrent_to_Voltage->extraNode2 = numNodes + extraNodeVector.size();
+						extraNodeVector.push_back("j" + tempCurrent_to_Voltage->name + " 2");
+						tempCurrent_to_Voltage->extraNode2 = numNodes + extraNodeVector.size();
 
-								tempCurrent_to_Voltage = NULL;
-							}
-							else {
+						tempCurrent_to_Voltage = NULL;
+					}
+					else {
 
-								extraNodeVector.push_back("j" + newComponent->name);
-								newComponent->extraNode = numNodes + extraNodeVector.size();
-							}
-						}
+						extraNodeVector.push_back("j" + newComponent->name);
+						newComponent->extraNode = numNodes + extraNodeVector.size();
 					}
 				}
+			}
+		}
 
-				newComponent = NULL;
-				netlistFile.close();
+		newComponent = NULL;
+		netlistFile.close();
 
-				cout << "_______________________________________________________________\n" << endl;
+		cout << "_______________________________________________________________\n" << endl;
 
 		//Update total number of nodes, considering extra nodes
-				numTotalNodes = numNodes + extraNodeVector.size();
+		numTotalNodes = numNodes + extraNodeVector.size();
 
-			//Check if frequency analysis parameters have been set
-				if (!validCommandLine) {
-					setCommandLineParameters("defautParameters");
-				}
+		//Check if frequency analysis parameters have been set
+		if (!validCommandLine) {
+			setCommandLineParameters("defautParameters");
+		}
 
-				cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
-				cout << "_______________________________________________________________\n" << endl;
+		cout << "\n NETLIST com " << componentNetlist.size() << " componentes e " << numNodes << " nos.\n" << endl;
+		cout << "_______________________________________________________________\n" << endl;
 
 	//	4 . SET NODAL SYSTEM
 
 		//Allocate memory for the output matrix - first line stores frequency values
-				nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.1);
+		nodalSolutionVector = vector< Complex > (numTotalNodes + 1, 0.1);
 
-			}
+}
 
 //Set frequency analysis parameters according to a command line
-			void netlistStructure::setCommandLineParameters(string commandLine) {
+void netlistStructure::setCommandLineParameters(string commandLine) {
 
 	/* COMMAND LINE PARAMETERS:
 		1. stepType (determines how the frequency step is calculated):
@@ -218,39 +217,39 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		4. finalFrequency
 	 */
 
-				const string defautStepType = "LIN";
-				const double defautInicialFreq = 0;
-				const double defautFinalFreq = 60;
-				const double defautPoints = 5;
+	const string defautStepType = "LIN";
+	const double defautInicialFreq = 0;
+	const double defautFinalFreq = 60;
+	const double defautPoints = 5;
 
 	//Set parameters with defaut values if necessary
-				if (commandLine == "defautParameters") {
-					stepType = defautStepType;
-					frequencyPoints = defautPoints;
-					inicialFrequency = defautInicialFreq;
-					finalFrequency = defautFinalFreq;
+	if (commandLine == "defautParameters") {
+		stepType = defautStepType;
+		frequencyPoints = defautPoints;
+		inicialFrequency = defautInicialFreq;
+		finalFrequency = defautFinalFreq;
 
-					Component::setFrequency(inicialFrequency);
-					validCommandLine = true;
+		Component::setFrequency(inicialFrequency);
+		validCommandLine = true;
 
-					cout << "\n Parametros de analise em frequencia configurados com valores padrao:" << endl;
-				}
-				else {
+		cout << "\n Parametros de analise em frequencia configurados com valores padrao:" << endl;
+	}
+	else {
 		// First option should be "AC", so we can skip it
-					unsigned int blankPosition;
-					blankPosition = commandLine.find(" ");
-					istringstream commandLineInput(commandLine.substr(blankPosition + 1));
+		unsigned int blankPosition;
+		blankPosition = commandLine.find(" ");
+		istringstream commandLineInput(commandLine.substr(blankPosition + 1));
 
-					commandLineInput >> stepType;
+		commandLineInput >> stepType;
 
 		//If step type is not valid, set it with its defaut value
-					if ((stepType != "DEC") && (stepType != "OCT") && (stepType != "LIN")) {
-						cout << "\n ALERTA: tipo de analise nao reconhecido. Opcao padrao selecionada." << endl;
-						stepType = defautStepType;
-					}
+		if ((stepType != "DEC") && (stepType != "OCT") && (stepType != "LIN")) {
+			cout << "\n ALERTA: tipo de analise nao reconhecido. Opcao padrao selecionada." << endl;
+			stepType = defautStepType;
+		}
 
 		//Set defaut value for frequency points if input is invalid
-					if (commandLineInput.eof())
+		if (commandLineInput.eof())
 			frequencyPoints = defautPoints;			//set defaut value
 		else commandLineInput >> frequencyPoints;	//set input value
 
@@ -266,9 +265,9 @@ netlistStructure::netlistStructure(const string validFilePath) : netlistFilePath
 		cout << "\n Parametros de analise em frequencia configurados com sucesso:" << endl;
 	}
 
-	cout << " > Points = " << frequencyPoints << endl;
-	cout << " > StepType = " << stepType << endl;
-	cout << " > Frequency Range: " << inicialFrequency << " to " << finalFrequency << endl << endl;
+	cout << " > Pontos = " << frequencyPoints << endl;
+	cout << " > Tipo de Passo = " << stepType << endl;
+	cout << " > Faixa de Frequencia: " << inicialFrequency << "Hz to " << finalFrequency << "Hz\n" << endl;
 
 	return;
 }
@@ -278,20 +277,20 @@ void netlistStructure::buildNodalSystem(const double frequency, vector<Complex> 
 
 	Component::setFrequency(frequency);
 
-	//LAMBANCA
-	char buf[1000],tmp[1000];
-
 	//Initialize nodal system matrix with zeros - line and column [0,0] represent the ground node
 	nodalSystem = vector< vector< Complex > > (numTotalNodes + 1, vector<Complex>(numTotalNodes + 2, 0.0));
 
+	//Save templates to file
+	//char buf[1000],tmp[1000];
+
 	for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
 		componentNetlist.at(index)->setTemplate(nodalSystem, previousSolutionVector);
+        /*
+		estampaLogFile.open("templateLogFile.txt", ios::app);
 
-		estampaLogFile.open("estampaLogFile.txt", ios::app);
-
-		//LAMBANCA DELICIA 1
 		estampaLogFile << "\nSistema apos a estampa de " << componentNetlist.at(index)->name;
 		estampaLogFile << " (" << frequency << ") " << endl;
+
 		for (int k=1; k<=numTotalNodes; k++) {
 			strcpy(buf,"");
 			for (int j=1; j<=numTotalNodes+1; j++) {
@@ -303,11 +302,7 @@ void netlistStructure::buildNodalSystem(const double frequency, vector<Complex> 
 			estampaLogFile << buf;
 		}
 
-		estampaLogFile.close();
-
-
-
-
+		estampaLogFile.close(); */
 	}
 }
 
@@ -338,7 +333,7 @@ int netlistStructure::solveNodalSystem() {
 		}
 
 		if (abs(temp) < MIN_ERROR_THRESHOLD) {
-			cout << "Erro: sistema singular." << endl;
+			cout << "\nErro: sistema singular." << endl;
 			return(0);
 		}
 
@@ -401,55 +396,51 @@ int netlistStructure::newtonRaphson() {
 			return(0);
 		}
 
+		//Compare new solution with solution from previous iteration
 		nodalSolutionVector[0] = 0;
 		converged = true;
-            //Compare new solution with solution from previous iteration
 		for (unsigned int index = 1; index <= numTotalNodes; ++index) {
 
-                //debug
-			cout << "\nAntiga: " << previousSolutionVector[index] << " Atual: " << nodalSolutionVector[index] << endl;
+            //debug
+			//cout << "\nAntiga: " << previousSolutionVector[index] << " Atual: " << nodalSolutionVector[index] << endl;
 
-                // (current solution - previous solution) / previous solution
+            // RELATIVE ERROR = (current solution - previous solution) / previous solution
 			if (abs( (previousSolutionVector[index] - nodalSolutionVector[index])
 				/ previousSolutionVector[index]) > MAX_ERROR) {
 
-                //if ( abs( (previousSolutionVector[index] - nodalSolutionVector[index])) > MAX_ERROR_ABSOLUTE ) {
 				converged = false;
-                    //break;
+			}
 		}
-	}
-	printOutputToFile(nodalSolutionVector);
 
-			//Copy new solution to nodalSolutionVector, for comparison in the next iteration
+		//Copy new solution to nodalSolutionVector, for comparison in the next iteration
+		previousSolutionVector = nodalSolutionVector;
 
+		//Use new solution as input to update Vbc, Vbe and Vce for every BJT in the circuit
+		BJT *tempBJT;
+		for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
+		            //If component is BJT, update Vbc, Vbe and Vce
+			if (componentNetlist.at(index)->type == 'Q') {
+				tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
+						//tempBJT->setTerminalVoltages(nodalSolutionVector);
 
-	previousSolutionVector = nodalSolutionVector;
-
-		//3. Use new solution as input to update Vbc, Vbe and Vce for every BJT in the circuit
-	BJT *tempBJT;
-	for (unsigned int index = 0; index < componentNetlist.size(); ++index) {
-	            //If component is BJT, update Vbc, Vbe and Vce
-		if (componentNetlist.at(index)->type == 'Q') {
-			tempBJT = dynamic_cast <BJT *> (componentNetlist.at(index));
-					//tempBJT->setTerminalVoltages(nodalSolutionVector);
-
-			tempBJT->Vbc = abs(nodalSolutionVector[tempBJT->nodeBase] - nodalSolutionVector[tempBJT->nodeCollector]);
-			tempBJT->Vbe = abs(nodalSolutionVector[tempBJT->nodeBase] - nodalSolutionVector[tempBJT->nodeEmitter]);
-			tempBJT->Vce = abs(nodalSolutionVector[tempBJT->nodeCollector] - nodalSolutionVector[tempBJT->nodeEmitter]);
+				tempBJT->Vbc = abs(nodalSolutionVector[tempBJT->nodeBase] - nodalSolutionVector[tempBJT->nodeCollector]);
+				tempBJT->Vbe = abs(nodalSolutionVector[tempBJT->nodeBase] - nodalSolutionVector[tempBJT->nodeEmitter]);
+				tempBJT->Vce = abs(nodalSolutionVector[tempBJT->nodeCollector] - nodalSolutionVector[tempBJT->nodeEmitter]);
+			}
 		}
+
+		tempBJT = NULL;
+		++countIterations;
 	}
 
-	tempBJT = NULL;
-	++countIterations;
-	cout << "\nITERACOES: " << countIterations << endl;
-	cout << "\nCOUNT RANDMIZATIONS: " << countRandomizations << endl;
-}
     //If algorithm reaches this point, solution must have converged
-return(1);
+	return(1);
 }
 
-//Compute and print operating point for all transistors
-void netlistStructure::findOperatingPoint() {
+//Print BJT operating point
+void netlistStructure::findBJTOperatingPoint() {
+
+	cout << " \nTRANSISTORES:\n" << endl;
 
 	if (hasBJT) {
 
@@ -467,10 +458,11 @@ void netlistStructure::findOperatingPoint() {
 				Ic = tempBJT->alfa * tempBJT->setCurrentBE() - tempBJT->setCurrentBC();
 				Ib = Ic * (tempBJT->alfa - 1) / (tempBJT->alfa);	 // ic = beta * ib entao ib = ic / beta, sendo beta = alfa / (alfa - 1)
 
-				cout << " TRANSISTOR NAME: " << tempBJT->name;
+				cout << " Transistor: " << tempBJT->name << endl;
 				cout << " > Vce = " << tempBJT->Vce << endl;
 				cout << " > Ic = " << Ic << endl;
 				cout << " > Ib = " << Ib << endl;
+				cout << endl;
 			}
 		}
 		tempBJT = NULL;
@@ -478,10 +470,10 @@ void netlistStructure::findOperatingPoint() {
 
 }
 
+//Used to debug
 void netlistStructure::printOutputToFile(std::vector<std::complex<double>> v) {
 
 	logFile.open(".\logFile.txt",ios::app);
-
 
 	if (!logFile) {
 		cout << "\n\nErro: nao foi possivel abrir o arquivo." << endl;
@@ -496,6 +488,7 @@ void netlistStructure::printOutputToFile(std::vector<std::complex<double>> v) {
 	logFile.close();
 
 }
+
 //Print nodal system
 void netlistStructure::printNodalSystem() {
 
@@ -518,89 +511,15 @@ void netlistStructure::printNodalSystem() {
 	}
 }
 
-//Perform frequency analysis
-void netlistStructure::freqAnalysis() {
-
-	double frequency, step, scaleFactor;
-	char option;
-
-	//1. Define scale factor
-	if (stepType == "LIN") {
-		step = (finalFrequency - inicialFrequency)/(frequencyPoints - 1);
-	}
-	else if (stepType == "DEC") {
-		scaleFactor = pow(10, (1.0/(frequencyPoints - 1)));
-	}
-	else if (stepType == "OCT") {
-		scaleFactor = pow(2, (1.0/(frequencyPoints - 1)));
-	}
-
-	//2. Write the header row of the output table, containing frequency, voltage and current identifiers
-
-		//Frequency header row
-	cout << "F";
-
-		//Voltage header row: module and phase
-	for (unsigned int index = 0; index < numNodes; ++index) {
-		cout << " " << (index + 1) << "m " << (index + 1) << "f";
-	}
-		//Current header row: module and phase
-	for (unsigned int index = 0; index < extraNodeVector.size(); ++index) {
-		cout << " " << extraNodeVector[index] << "m " << extraNodeVector[index] << "f";
-	}
-
-	cout << endl;
-
-	//3. Build and solve the system for a range of frequencies
-
-	frequency = inicialFrequency;
-
-	while (frequency <= finalFrequency) {
-
-		buildNodalSystem(2*PI*frequency, previousSolutionVector);
-
-		if (!solveNodalSystem()) {
-			cout << " Nao foi possivel calcular a analise na frequencia " << frequency << ". Programa abortado." << endl;
-			cout << " Pressione qualquer tecla para fechar..." << endl;
-			cin.get();
-
-			exit(EXIT_FAILURE);
-		}
-
-		cout << scientific << setprecision(4) << abs(nodalSolutionVector.at(0));
-
-			//Write the output splitting values into magnitude and phase (start in 1 to ignore ground node)
-		for (unsigned int column = 1; column < nodalSolutionVector.size(); ++column) {
-			cout << " " << scientific << setprecision(5) << abs(nodalSolutionVector.at(column))
-			<< " " << fixed << setprecision(3) << arg(nodalSolutionVector.at(column))*(180/PI);
-		}
-			cout << endl; //this line is done!
-
-			//Set frequency for next iteration
-			if (stepType == "LIN")
-				frequency += step;
-			else
-				frequency *= scaleFactor;
-		}
-		cout << "\n___________________________________________________________________________\n" << endl;
-		cout << " Analise em frequencia realizada com sucesso.\n" << endl;
-		cout << " Deseja salvar o resultado? [Y/N] ";
-
-		while( (option != 'Y') && (option != 'N')) {
-			cin.get(option);
-		}
-		if(option == 'Y') freqAnalysisToFile(step, scaleFactor);
-	}
-
 //
-	void netlistStructure::freqAnalysisToFile(double step, double scaleFactor) {
+void netlistStructure::freqAnalysisToFile() {
 
-		double frequency;
+	double frequency, step, scaleFactor;;
 
-		string outputFileName;
-		ofstream outputFile;
+	string outputFileName;
+	ofstream outputFile;
 
-	//Set the file name
+	//1. Create and open the file
 		outputFileName = netlistFilePath.substr(0, netlistFilePath.find("."));
 		outputFileName += " - Frequency Analysis.tab";
 
@@ -611,7 +530,18 @@ void netlistStructure::freqAnalysis() {
 			exit(EXIT_FAILURE);
 		}
 
-	//1. Write the header of the output table, containing frequency, voltage and current identifiers
+	//2. Calculate scale factor
+		if (stepType == "LIN") {
+			step = (finalFrequency - inicialFrequency)/(frequencyPoints - 1);
+		}
+		else if (stepType == "DEC") {
+			scaleFactor = pow(10, (1.0/(frequencyPoints - 1)));
+		}
+		else if (stepType == "OCT") {
+			scaleFactor = pow(2, (1.0/(frequencyPoints - 1)));
+		}
+
+	//3. Write the header of the output table, containing frequency, voltage and current identifiers
 
 		outputFile << "f";
 
@@ -625,7 +555,7 @@ void netlistStructure::freqAnalysis() {
 
 		outputFile << endl;
 
-	//3. Write the output for a range of frequencies
+	//4. Write the output for a range of frequencies
 		for (frequency = inicialFrequency; frequency <= finalFrequency; ) {
 
 			buildNodalSystem(2*PI*frequency, previousSolutionVector);
@@ -649,7 +579,7 @@ void netlistStructure::freqAnalysis() {
 
 		outputFile.close();
 
-		cout << "\n Arquivo gravado com sucesso em:\n" << outputFileName << endl;
+		cout << "\n Arquivo gravado com sucesso em:\n " << outputFileName << endl << endl;
 		cout << " Pressione qualquer tecla para continuar...";
 		cin.get();
 	}

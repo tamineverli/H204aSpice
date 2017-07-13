@@ -17,23 +17,16 @@ class BJT : public Component
         virtual void setTemplate(ComplexVector &nodalSystem, vector<Complex> &previousSolutionVector);
         virtual void print();
 
-        //Set and Get methods for Vbc, Vbe and Vce
-        //void setTerminalVoltages(ComplexVector &nodalSolutionVector);
-        double getVbc();
-        double getVbe();
-        double getVce();
-
         //Calculate parameters of the linear model needed to set the templates
         double setConductanceBC();
         double setCurrentBC();
         double setConductanceBE();
         double setCurrentBE();
+        //Early Effect
         double sourceG1();
         double sourceG2();
         double sourceG3();
         double sourceI0();
-
-        //Early Effect
         double iDE();
         double iDC();
 
